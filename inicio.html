@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Importa a biblioteca Chart.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="body">
+    <div style="display: flex;">
+        <div style="display: flex;">
+            <div id="menu">
+                <div id="inicio" align="center" >
+                    <button class="btn" onclick="window.location.href='inicio.html'">
+                        <img class="icons_menu" src="icons/casa.png">
+                        <div style="font-size: 18px;">Início</div>
+                    </button>
+                </div>
+                <div id="novo_pedido" align="center">
+                    <button class="btn" onclick="window.location.href='novo_pedido.html'">
+                        <img class="icons_menu" src="icons/carrinho_adicionar.png">
+                        <div style="font-size: 18px;">Novo Pedido</div>
+                    </button>
+                </div>
+                <div id="" align="center">
+                    <button class="btn" onclick="window.location.href='ver_pedidos.php'">
+                        <img class="icons_menu" src="icons/pedido.png">
+                        <div style="font-size: 18px;">Ver Pedidos</div>
+                    </button>
+                </div>                
+                    <div id="" align="center">
+                        <button class="btn" onclick="window.location.href='acrescimo.html'">
+                            <img class="icons_menu" src="icons/acrecimo.png">
+                            <div style="font-size: 18px;">Acrécimos</div>
+                        </button>
+                    </div>
+                <div id="" align="center">
+                    <button class="btn" onclick="window.location.href=''">
+                        <img class="icons_menu" src="icons/panela.png">
+                        <div style="font-size: 18px;">Produtos</div>
+                    </button>
+                </div>
+
+                <div id="" align="center">
+                    <button class="btn" onclick="window.location.href=''">
+                        <img class="icons_menu" src="">
+                        <div style="font-size: 18px;"></div>
+                    </button>
+                </div>
+                <div id="" align="center">
+                    <button class="btn" onclick="window.location.href=''">
+                        <img class="icons_menu" src="">
+                        <div style="font-size: 18px;"></div>
+                    </button>
+                </div>
+            </div>
+            <div>
+                <button id="btn_menu" onclick="alternarDiv()">
+                    <img id="ico_menu" src="icons/seta_direita.png" align="right">
+                </button>
+            </div>
+            <div>
+                <div class="total_faturado">
+                    <label class="lab"> Total faturado: </label>
+                    <label class="lab">R$</label>
+                </div>
+                <div class="grafico">
+                    <div style="width: 50%; margin: auto;">
+                        <div class="canvas-container">
+                            <canvas id="graficoPizza"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="total_faturado">
+                <label class="lab"> Total de dividas: </label>
+                    <label class="lab">R$</label>
+                </div>
+                <div class="grafico">
+                    <table id="tabela_form_pag">
+                        <tr class="tr_form_pag">
+                            <td colspan="2">
+                                <h1>Formas de pagamento</h1>
+                            </td>
+                        </tr>
+                        <tr class="tr_form_pag">
+                            <td class="form_pag">
+                                <h3>Dinheiro:</h3>
+                            </td>
+                            <td class="total_form_pag">10,00</td>
+                        </tr>
+                        <tr class="tr_form_pag">
+                            <td class="form_pag">
+                                <h3>Cartão:</h3>
+                            </td>
+                            <td class="total_form_pag">10,00</td>
+                        </tr>
+                        <tr class="tr_form_pag">
+                            <td class="form_pag">
+                                <h3>Pix:</h3>
+                            </td>
+                            <td class="total_form_pag">10,00</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    <script src="script.js"></script>
+    <script src="grafico.js"></script>
+</body>
+</html>

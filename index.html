@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- <button onclick="window.location.href=''"></button> -->
+    <style>
+        body{
+        margin: 0;  
+        background-color: #6b6b6b;  
+        }
+
+        h1{
+            color: rgb(0, 0, 0);
+        }
+        a{
+            color: rgb(20, 20, 20);
+        }
+        button {
+            height: 35px;
+            width: 200px;
+            margin: 5px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        .div{
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            margin-right: 20px;
+        }                                   
+    </style>
+    <div style="display: flex; justify-content: center; height: 100vh;">
+        <div class="div">
+            <h1>HTMLs</h1>
+            <button onclick="window.location.href='inicio.html'">Início</button>
+            <button onclick="window.location.href='novo_pedido.html'">Novo pedido</button>
+            <button onclick="window.location.href='novo_prato.html'">Novo prato</button>
+            
+        </div>
+        <div class="div">
+            <h1>PHPs</h1>
+            <button onclick="window.location.href='conexao.php'">conexao.php</button>
+            <button onclick="window.location.href='ver_pedidos.php'">Pedidos</button>
+            <button onclick="window.location.href='cadastro_pedido.php'">Concluir pedido</button>
+        </div>
+        <div class="div">
+            <h1>CSSs</h1>
+            <button onclick="window.location.href='style.css'">Style</button>
+        </div>
+        <div class="div">
+            <h1>JSs</h1>
+            <button onclick="window.location.href='script.js'">Script</button>
+            <Button onclick="window.location.href='grafico.js'">Grafico</Button>
+            <button onclick="window.location.href='entrega.js'">Entrega</button>
+        </div>
+        <div class="div">
+            <h1>Banco de dados</h1>
+            <button><a href="" download=""></a></button>
+        </div>
+    </div>
+
+</body>
+</html>
