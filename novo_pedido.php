@@ -187,7 +187,6 @@
                             <div id="carrinho" style="display: flex; justify-content: space-between;">
                                 <div style="margin-left: 50px; height: 100%; width: 40%; border-radius: 10px; background-color: white;">
                                     <?php 
-                                        echo "<h2 style='margin-left: 10px'>Carrinho:</h2>";
                                         if(isset($_GET['adicionar']))
                                             {
                                                 // Converte o valor recebido para inteiro
@@ -289,55 +288,11 @@
                                         else
                                             {
                                                 // Caso não exista nenhum produto
-                                                echo "<div align='center'>Carrinho vazio.</div>";
+                                                echo "<div align='center' style='border: 1px solid; border-left: '>Carrinho vazio.</div>";
                                             }    
                                         ?>
                                 </div>
-                                <div style="margin-right: 50px;height: 100%; width: 40%; border-radius: 10px; background-color: white;">
-                                    <h1 align="center">
-                                        Resumo da Compra
-                                    </h1>
-                                    <div align="center" style="font-size: 20px;">
-                                        -------------------------------------------------------------------
-                                    </div>
-                                    <?php
-                                    if(isset($_SESSION['carrinho']))
-                                            {
-                                                // Variável para guardar total
-                                                $total = 0;
-
-                                                // Percorre todos os produtos do carrinho
-                                                foreach($_SESSION['carrinho'] as $key => $value)
-                                                    {
-                                                        // Multiplica quantidade pelo preço
-                                                        $subtotal = $value['quantidade'] * $value['preco'];
-
-                                                        // Soma no total geral
-                                                        $total += $subtotal;
-                                                    }
-                                                // Mostra o endereço
-                                                echo '<p style="margin-left: 20px;"> Endereço: '. '</p>';
-
-                                                // Mostra a taxa de entrega
-                                                echo '<p style="margin-left: 20px;"> Taxa de entrega: '. '</p>';
-                                                
-                                                // Mostra o valor total do carrinho
-                                                echo "<h3 style='margin-left: 20px;'>Total: R$ ".number_format($total,2,',','.')."</h3>";
-
-                                                if(isset($_GET['limpar'])) {
-                                                        unset($_SESSION['carrinho']);
-                                                    }
-
-                                                echo '<button style="margin-left: 40px; margin-bottom: 10px; font-size: 18px; width: 90%;"> comprar </button>';
-                                            }
-                                        else
-                                            {
-                                                // Caso não exista nenhum produto
-                                                echo "<div align='center'>Carrinho vazio.</div>";
-                                            }    
-                                        ?>
-                                </div>
-                            </div>
+                            </div>  
                         </div>
                         <script>
                             function apagaProduto(id) {

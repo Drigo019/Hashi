@@ -113,7 +113,9 @@ body {
     align-items: center;
     text-align: center;
 }
-
+.carrinho_vazio{
+    font-size: 30px;
+}
 
 
 /*====================
