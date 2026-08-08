@@ -308,10 +308,10 @@
                                 window.location.href = "?aumentar=" + id;
                             }
                     </script>
-                <div class="div_nov_ped">
+                <div class="div_nov_ped" id="comanda">
                     <div id="div_dados" class="tabela"> 
                         <div>
-                            <form method="POST" action="cadastro_venda.php" id="formulario"  onsubmit="atualizarTotalBanco()">
+                            <form action="imprimir_comanda.php" method="POST">
                             <table  align="center">
                                 <tr>
                                     <td colspan="2" style="text-align: center;"><h2>Dados do cliente:</h2></td>
@@ -355,7 +355,11 @@
                                     <td class="td_pedido">Bairro:</td>
                                     <td class="td_pedido">
                                         <select name="bairro" id="bairro">
-
+                                            <option value=""></option>
+                                            <option value="bairro2">Bairro 2</option>
+                                            <option value="bairro3">Bairro 3</option>
+                                            <option value="bairro4">Bairro 4</option>
+                                            <option value="bairro5">Bairro 5</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -394,11 +398,11 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2" style="text-align: center;">
-                                        <button type="submit" style="background-color: #990000ab; color: white; border: none; padding: 10px 20px; cursor: pointer;">Cadastrar Pedido</button>
+                                        <button type="submit" style="background-color: #990000ab; color: white; border: none; padding: 10px 20px; cursor: pointer;">Imprimir Comanda</button>
                                     </td>
                                 </tr>
                             </table>
-                        </form>
+                            </form>
                         </div>
                     </div>
                 </div>

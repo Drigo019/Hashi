@@ -47,7 +47,7 @@ body {
     max-width: 300px; /* ajusta conforme o tamanho do seu menu */
 }
 #menu {
-    height: 10000%;
+    height: 634px;
     width: 190px;
     background-color: rgb(0, 0, 0) ;
 }
@@ -76,7 +76,7 @@ body {
 ====================*/
 
 .div_nov_ped{
-    border: 2px solid;
+    border: 1px solid;
     width: 34%;
     border-left: none;
     border-top: none;
