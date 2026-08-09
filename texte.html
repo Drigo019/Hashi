@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- HTML -->
+<button id="meuBotao">Clique aqui</button>
+<div id="minhaDiv">Texto original</div>
+
+<script>
+  // Seleciona o botão e a div pelo ID
+  const botao = document.getElementById('meuBotao');
+  const div = document.getElementById('minhaDiv');
+
+  // Adiciona a ação de clique
+  botao.addEventListener('click', function() {
+    div.textContent = 'Novo texto adicionado com sucesso!';
+  });
+</script>
+
+</body>
+</html>

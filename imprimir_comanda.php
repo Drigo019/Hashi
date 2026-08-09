@@ -1,12 +1,15 @@
 <?php
     $nome = $_POST['nome'];
     $telefone = $_POST['telefone'];
+    $carrinho = $_POST['carrinho_lista'];
     $rua = $_POST['rua'];
     $numero = $_POST['numero'];
     $bairro = $_POST['bairro'];
-    $total = $_POST['valor'];
+    $obs_estrega = $_POST['obs_estrega'];
+    $total = $_POST['total'];
     $forma_pagamento = $_POST['form_pag'];
-    $obs = $_POST['obs'];
+    $obs_pagamento = $_POST['obs_pagamento'];
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,6 +31,10 @@
                 <td><?php echo $telefone; ?></td>
             </tr>
             <tr>
+                <td><strong>Pedido:</strong></td>
+                <td><?php echo $carrinho; ?></td>
+            </tr>
+            <tr>
                 <td><strong>rua:</strong></td>
                 <td><?php echo $rua; ?></td>
             </tr>
@@ -40,6 +47,10 @@
                 <td><?php echo $bairro; ?></td>
             </tr>
             <tr>
+                <td><strong>Observação de Entrega:</strong></td>
+                <td><?php echo $obs_estrega; ?></td>
+            </tr>
+            <tr>
                 <td><strong>Total:</strong></td>
                 <td><?php echo $total; ?></td>
             </tr>
@@ -48,8 +59,8 @@
                 <td><?php echo $forma_pagamento; ?></td>
             </tr>
             <tr>
-                <td><strong>Observação:</strong></td>
-                <td><?php echo $obs; ?></td>
+                <td><strong>Observação de Pagamento:</strong></td>
+                <td><?php echo $obs_pagamento; ?></td>
             </tr>
         </table>
     </div>
@@ -57,21 +68,6 @@
         // Chama a função ao carregar a página
         window.onload = function() {
             window.print();
-        };
-        const select = document.getElementById("tipo_entrega");
-        const endereco = document.getElementById("endereco");
-
-        select.addEventListener("change", function () {
-            if (this.value === "entrega") {
-                endereco.style.display = "block"; // mostra
-            } else {
-                endereco.style.display = "none"; // esconde
-            }
-        }); 
-        window.onload = function() {
-            if (select.value === "entrega") {
-                endereco.style.display = "block";
-            }
         };
     </script>
     <style>

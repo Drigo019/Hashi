@@ -60,355 +60,206 @@
                 </button>
             </div>
         </div>
+        
         <div style="display: flex; width: 100%; height: 100vh;">
-                <div class="div_nov_ped">
-                    <h1 align="center">Produtos:</h1>
+            <div class="div_nov_ped" align="center">
+                <form action="imprimir_comanda.php" method="POST" onsubmit="prepararEnvio()">
+                <div class="categoria_pratos"> 
+                    <h2> Pratos Quentes </h2>
+                    <button type="button" onclick="adicionarAoCarrinho('Prato Feito', 25.00)">Prato Feito</button>
+                    <button type="button" onclick="adicionarAoCarrinho('Lasanha', 30.00)">Lasanha</button>
+                    <button type="button" onclick="adicionarAoCarrinho('Hambúrguer', 20.00)">Hambúrguer</button>
+                </div>
+                <div>
+
+                </div>
+            </div>
+            <div class="div_nov_ped">
+                <div align="center">
+                    <h2>Carrinho:</h2>
+                </div>
+                <input type="hidden" name="carrinho_lista" id="carrinho_hidden">
+                <input type="hidden" name="itens" id="itens_hidden"><div id="carrinho_lista"></div>
+                <button onclick="limparCarrinho()">Limpar Carrinho</button>
+            </div>
+            <div class="div_nov_ped" id="comanda">
+                <div id="div_dados" class="tabela"> 
                     <div>
-                        <div class="menu">
-                            <div>
-                                <div class="container-produtos">
-                                    <?php
-                                        // Array contendo todos os produtos
-                                        $itens = array(
-                                            
-                                            // Produto 1
-                                            ['nome' => '', 'imagem' => '', 'preco' => 0.00],
-
-                                            // Produto 2
-                                            ['nome' => '', 'imagem' => '', 'preco' => 0.00],
-
-                                            // Produto 3
-                                            ['nome' => '', 'imagem' => '', 'preco' => 0.00],
-
-                                            // Produto 4
-                                            ['nome' => '', 'imagem' => '', 'preco' => 0.00],
-
-                                            // Produto 5
-                                            ['nome' => '', 'imagem' => '', 'preco' => 0.00],
-
-                                            // Produto 6
-                                            ['nome' => '', 'imagem' => '', 'preco' => 0.00],
-
-                                            // Produto 7
-                                            ['nome' => '', 'imagem' => '', 'preco' => 0.00],
-
-                                            // Produto 8
-                                            ['nome' => '', 'imagem' => '', 'preco' => 0.00],
-
-                                            // Produto 9
-                                            ['nome' => '', 'imagem' => '', 'preco' => 0.00],
-
-                                            // Produto 10
-                                            ['nome' => '', 'imagem' => '', 'preco' => 0.00],
-
-                                            // Produto 11
-                                            ['nome' => '', 'imagem' => '', 'preco' => 0.00],
-
-                                            // Produto 12
-                                            ['nome' => '', 'imagem' => '', 'preco' => 0.00],
-
-                                            // Produto 13
-                                            ['nome' => '', 'imagem' => '', 'preco' => 0.00],
-
-                                            // Produto 14
-                                            ['nome' => '', 'imagem' => '', 'preco' => 0.00],
-
-                                            // Produto 15
-                                            ['nome' => '', 'imagem' => '', 'preco' => 0.00],
-                                        );
-
-                                        // foreach percorre todos os produtos do array
-                                        foreach($itens as $key => $value){
-                                    ?>
-                                            <!-- Caixa do produto -->
-                                            <div class="produto">
-
-                                                <!-- Imagem do produto -->
-                                                <img src="<?php echo $value['imagem']; ?>" style="height: 150px;"><br><br>
-
-                                                <!-- Nome do produto -->
-                                                <strong><?php echo $value['nome']; ?></strong><br>
-
-                                                <!-- Mostra o preço formatado -->
-                                                R$ <?php echo number_format($value['preco'],2,',','.'); ?><br><br>
-
-                                                <!-- Link para adicionar produto -->
-                                                <!-- O valor do produto vai pela URL -->
-                                                <a href="?adicionar=<?php echo $key; ?>">
-                                                    Adicionar ao Carrinho
-                                                </a>
-                                            </div>
-                                            <?php 
-                                        } 
-                                            ?>
-                                </div>
-                                <?php
-                                    // Verifica se existe "adicionar" na URL
-                                    if(isset($_GET['adicionar'])){
-                                        // Converte o valor recebido para inteiro
-                                        $idProduto = (int) $_GET['adicionar'];
-
-                                        // Verifica se o produto existe no array
-                                        if(isset($itens[$idProduto])){
-                                            // Verifica se o produto já está no carrinho
-                                            if(isset($_SESSION['carrinho'][$idProduto])){
-                                                // Soma +1 na quantidade
-                                                $_SESSION['carrinho'][$idProduto]['quantidade']++;
-                                            }else{
-                                                // Cria um novo produto no carrinho
-                                                $_SESSION['carrinho'][$idProduto] = array(
-                                                    // Quantidade inicial
-                                                    'quantidade' => 1,
-
-                                                    // Nome do produto
-                                                    'nome' => $itens[$idProduto]['nome'],
-
-                                                    // Preço do produto
-                                                    'preco' => $itens[$idProduto]['preco']
-                                                );
-                                            }
-
-                                // Exibe mensagem na tela
-                                echo '<script>alert("Produto adicionado ao carrinho!");</script>';
-
-                                        }else{
-                                            // Caso tentem adicionar um produto inexistente
-                                            die("Você não pode adicionar um produto que não existe.");
-                                        }
-                                    }
-
-                                ?> 
-                            </div>
-                        </div>
+                        
+                        <table  align="center">
+                            <tr>
+                                <td colspan="2" style="text-align: center;"><h2>Dados do cliente:</h2></td>
+                            </tr>
+                            <tr>
+                                <td class="td_pedido">Telefone:</td>
+                                <td class="td_pedido"><input type="text" name="telefone" id="telefone" style="font-size: 20px;" required></td>
+                            </tr>
+                            <tr>
+                                <td class="td_pedido">Nome:</td>
+                                <td class="td_pedido"><input type="text" name="nome" id="nome" style="font-size: 20px;" required></td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
-                <div class="div_nov_ped">
-                    <h1 align="center">Carrinho:</h1>
-                            <div id="carrinho" style="display: flex; justify-content: space-between;">
-                                <div style="margin-left: 50px; height: 100%; width: 40%; border-radius: 10px; background-color: white;">
-                                    <?php 
-                                        if(isset($_GET['adicionar']))
-                                            {
-                                                // Converte o valor recebido para inteiro
-                                                $idProduto = (int) $_GET['adicionar'];
-
-                                                // Verifica se o produto existe no array
-                                                if(isset($itens[$idProduto]))
-                                                    {
-                                                        // Verifica se o produto já está no carrinho
-                                                        if(isset($_SESSION['carrinho'][$idProduto]))
-                                                            {
-                                                                // Soma +1 na quantidade
-                                                                $_SESSION['carrinho'][$idProduto]['quantidade']++;
-                                                            }
-                                                        else
-                                                            {
-                                                                // Cria um novo produto no carrinho
-                                                                $_SESSION['carrinho'][$idProduto] = array(
-
-                                                                // Quantidade inicial
-                                                                'quantidade' => 1,
-
-                                                                // Nome do produto
-                                                                'nome' => $itens[$idProduto]['nome'],
-
-                                                                // Preço do produto
-                                                                'preco' => $itens[$idProduto]['preco']
-
-
-                                                                );
-                                                            }
-                                                    }
-                                            }
-                                        // DIMINUIR QUANTIDADE
-                                        if(isset($_GET['diminuir'])) {
-                                            $idProduto = (int) $_GET['diminuir'];
-
-                                            if(isset($_SESSION['carrinho'][$idProduto])) {
-                                                // Diminui 1
-                                                $_SESSION['carrinho'][$idProduto]['quantidade']--;
-
-                                                // Se chegar a 0, remove o produto do carrinho
-                                                if($_SESSION['carrinho'][$idProduto]['quantidade'] <= 0) {
-                                                    unset($_SESSION['carrinho'][$idProduto]);
-                                                }
-                                            }
-                                        }
-                                        // AUMENTAR QUANTIDADE
-                                        if(isset($_GET['aumentar'])) {
-                                            $idProduto = (int) $_GET['aumentar'];
-
-                                            if(isset($_SESSION['carrinho'][$idProduto])) {
-                                                $_SESSION['carrinho'][$idProduto]['quantidade']++;
-                                            }
-                                        }
-                                        if(isset($_SESSION['carrinho']))
-                                            {
-                                                // Variável para guardar total
-                                                $total = 0;
-
-                                                // Percorre todos os produtos do carrinho
-                                                foreach($_SESSION['carrinho'] as $key => $value)
-                                                    {
-                                                        // Multiplica quantidade pelo preço
-                                                        $subtotal = $value['quantidade'] * $value['preco'];
-
-                                                        // Soma no total geral
-                                                        $total += $subtotal;
-
-                                                        if(isset($_GET['remover'])) {
-                                                            $idProduto = (int) $_GET['remover'];
-
-                                                            if(isset($_SESSION['carrinho'][$idProduto])) {
-                                                                unset($_SESSION['carrinho'][$idProduto]);
-                                                            }
-                                                        }
-
-                                                        if(isset($_GET['limpar'])) {
-                                                            unset($_SESSION['carrinho']);
-                                                        }
-
-                                                        // Mostra os dados do produto
-                                                        echo '<p style="margin-left: 10px; width: 90%;">'.'
-                                                            Nome: '.$value['nome'].' <br>
-                                                            Quantidade: '.$value['quantidade'].' 
-                                                            <button style="margin-left: 20px;" onclick="tirar1('.$key.'), location.reload();">-</button>
-                                                            <button style="margin-left: 5px;" onclick="adicionar1('.$key.'), location.reload();">+</button>
-                                                            <button style="margin-left: 20px;" onclick="apagaProduto('.$key.'), location.reload();">Retirar do carrinho</button> <br>
-                                                            Preço: R$ '.number_format($subtotal,2,',','.').'
-                                                            </p>';
-
-                                                    }
-
-                                                // Mostra o valor total do carrinho
-                                                echo "<h3 style='margin-left: 10px'>Total: R$ ".number_format($total,2,',','.')."</h3>";
-
-                                                echo "<button style='margin-left: 40px; margin-bottom: 10px; font-size: 18px; width: 90%;' onclick='limparCarrinho(), location.reload();'> Limpar Carrinho </button>";
-                                            }
-                                        else
-                                            {
-                                                // Caso não exista nenhum produto
-                                                echo "<div align='center' style='border: 1px solid; border-left: '>Carrinho vazio.</div>";
-                                            }    
-                                        ?>
-                                </div>
-                            </div>  
-                        </div>
-                        <script>
-                            function apagaProduto(id) {
-                                window.location.href = "?remover=" + id;
-                            }
-                            function limparCarrinho() {
-                                window.location.href = "?limpar=1";
-                            }
-                            function tirar1(id) {
-                                window.location.href = "?diminuir=" + id;
-                            }
-                            function adicionar1(id) {
-                                window.location.href = "?aumentar=" + id;
-                            }
-                    </script>
-                <div class="div_nov_ped" id="comanda">
-                    <div id="div_dados" class="tabela"> 
-                        <div>
-                            <form action="imprimir_comanda.php" method="POST">
-                            <table  align="center">
-                                <tr>
-                                    <td colspan="2" style="text-align: center;"><h2>Dados do cliente:</h2></td>
-                                </tr>
-                                <tr>
-                                    <td class="td_pedido">Telefone:</td>
-                                    <td class="td_pedido"><input type="text" name="telefone" id="telefone" required></td>
-                                </tr>
-                                <tr>
-                                    <td class="td_pedido">Nome:</td>
-                                    <td class="td_pedido"><input type="text" name="nome" id="nome" required></td>
-                                </tr>
-                            </table>
-                        </div>
+                <div>
+                    <div id="div_entrega" class="tabela">
+                        <table align="center">
+                            <tr>
+                                <td colspan="2"><h2>Envio do pedido:</h2></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="td_pedido">
+                                    <select class="select"  name="tipo_entrega" id="tipo_entrega">
+                                        <option value="retirada" selected>Retirada</option>
+                                        <option value="entregar">Entregar</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                        <table align="center" id="endereco" style="display: none;">
+                            <tr>
+                                <td class="td_pedido" >Rua:</td>
+                                <td class="td_pedido"><input type="text" name="rua" id="rua" style="font-size: 20px;"></td>
+                            </tr>
+                            <tr>
+                                <td class="td_pedido">Número:</td>
+                                <td class="td_pedido"><input type="number" name="numero" id="numero" style="font-size: 20px;"></td>
+                            </tr>
+                            <tr>
+                                <td class="td_pedido">Bairro:</td>
+                                <td class="td_pedido">
+                                    <select name="bairro" id="bairro">
+                                        <option value=""></option>
+                                        <option value="bairro2">Por do sol</option>
+                                        <option value="bairro3">Bairro 3</option>
+                                        <option value="bairro4">Bairro 4</option>
+                                        <option value="bairro5">Bairro 5</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td_pedido">Observação:</td>
+                                <td class="td_pedido"><input type="text" name="obs_estrega" id="obs_estrega" style="font-size: 20px;"></td>
+                            </tr>
+                        </table>
                     </div>
-                    <div>
-                        <div id="div_entrega" class="tabela">
-                            <table align="center">
-                                <tr>
-                                    <td colspan="2"><h2>Envio do pedido:</h2></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" class="td_pedido">
-                                        <select class="select"  name="tipo_entrega" id="tipo_entrega">
-                                            <option value="retirada" selected>Retirada</option>
-                                            <option value="entregar">Entregar</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                            </table>
-                            <table align="center" id="endereco" style="display: none;">
-                                <tr>
-                                    <td class="td_pedido">Rua:</td>
-                                    <td class="td_pedido"><input type="text" name="rua" id="rua"></td>
-                                </tr>
-                                <tr>
-                                    <td class="td_pedido">Número:</td>
-                                    <td class="td_pedido"><input type="number" name="numero" id="numero"></td>
-                                </tr>
-                                <tr>
-                                    <td class="td_pedido">Bairro:</td>
-                                    <td class="td_pedido">
-                                        <select name="bairro" id="bairro">
-                                            <option value=""></option>
-                                            <option value="bairro2">Bairro 2</option>
-                                            <option value="bairro3">Bairro 3</option>
-                                            <option value="bairro4">Bairro 4</option>
-                                            <option value="bairro5">Bairro 5</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="td_pedido">Observação:</td>
-                                    <td class="td_pedido"><input type="text" name="obs" id="obs" ></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="tabela">
-                        <div id="div_form_pag">
-                            <table  align="center">
-                                <tr>
-                                    <td colspan="2"><h2>Valor do pedido:</h2></td>
-                                    <input type="hidden" name="valor" id="valor">
-                                </tr>
-                                <tr>
-                                    <td class="td_pedido">Total:</td>
-                                    <td class="td_pedido" id="total_pedido" name="total_pedido"></td>
-                                </tr>
-                                <tr>
-                                    <td class="td_pedido">Forma de pagamento:</td>
-                                    <td class="td_pedido">
-                                        <select class="select" name="form_pag" id="form_pag">
-                                            <option value="dinheiro">Dinheiro</option>
-                                            <option value="cartao">Cartão</option>
-                                            <option value="pix">Pix</option>
-                                            <option value="fiado">Fiado</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="td_pedido">Observação:</td>
-                                    <td class="td_pedido"><input type="text" name="obs_pag" id="obs_pag"></td>  
-                                </tr>
-                                <tr>
-                                    <td colspan="2" style="text-align: center;">
-                                        <button type="submit" style="background-color: #990000ab; color: white; border: none; padding: 10px 20px; cursor: pointer;">Imprimir Comanda</button>
-                                    </td>
-                                </tr>
-                            </table>
-                            </form>
-                        </div>
+                </div>
+                <div class="tabela">
+                    <div id="div_form_pag">
+                        <table  align="center">
+                            <tr>
+                                <td class="td_pedido">
+                                    Total: R$ 
+                                </td>
+                                <td class="td_pedido">
+                                    <input type="text" id="total_visivel" style="font-size: 20px;" readonly >
+                                    <input type="hidden" name="total" id="total_hidden">
+                                </td>
+                                
+                            </tr>
+                            <tr>
+                                <td class="td_pedido">Forma de pagamento:</td>
+                                <td class="td_pedido">
+                                    <select class="select" name="form_pag" id="form_pag">
+                                        <option value="dinheiro">Dinheiro</option>
+                                        <option value="cartao">Cartão</option>
+                                        <option value="pix">Pix</option>
+                                        <option value="fiado">Fiado</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td_pedido">Observação:</td>
+                                <td class="td_pedido"><input type="text" name="obs_pagamento" id="obs_pagamento" style="font-size: 20px;"></td>  
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align: center;">
+                                    <button type="submit" style="background-color: #990000ab; color: white; border: none; padding: 10px 20px; cursor: pointer;">Imprimir Comanda</button>
+                                </td>
+                            </tr>
+                        </table>
+                        
                     </div>
                 </div>
             </div>
+        </div>
     </div>
+</form>
     <script src="entrega.js"></script>
     <script src="script.js"></script>
+    <script>
+        let carrinho = [];
+
+        function adicionarAoCarrinho(nome, preco) {
+            let itemExistente = carrinho.find(item => item.nome === nome);
+
+            if (itemExistente) {
+                itemExistente.qtd += 1;
+            } else {
+                carrinho.push({
+                    nome: nome,
+                    preco: Number(preco),
+                    qtd: 1
+                });
+            }
+
+            atualizarCarrinho();
+        }
+
+        function removerItem(index) {
+            carrinho.splice(index, 1);
+            atualizarCarrinho();
+        }
+
+        function limparCarrinho() {
+            carrinho = [];
+            atualizarCarrinho();
+        }
+
+        function atualizarCarrinho() {
+            let lista = document.getElementById("carrinho_lista");
+            lista.innerHTML = "";
+
+            let total = 0;
+
+            carrinho.forEach((item, index) => {
+                let div = document.createElement("div");
+
+                let subtotal = item.preco * item.qtd;
+                total += subtotal;
+
+                div.innerHTML = `
+                    ${item.nome} (x${item.qtd}) - R$ ${subtotal.toFixed(2)}
+                    <button onclick="removerItem(${index})">❌</button>
+                `;
+
+                 lista.appendChild(div); // cada item vira uma linha
+            });
+
+            document.getElementById("total_visivel").value = total.toFixed(2);
+            document.getElementById("total_hidden").value = total.toFixed(2);
+        }
+
+        function prepararEnvio() {
+            let listaTexto = "";
+            let itens = [];
+
+            carrinho.forEach(item => {
+                let linha = `${item.nome} (x${item.qtd}) - R$ ${(item.preco * item.qtd).toFixed(2)}`;
+
+                listaTexto += linha + "<br>";
+
+                itens.push({
+                    nome: item.nome,
+                    qtd: item.qtd,
+                    preco: item.preco
+                });
+            });
+
+            document.getElementById("carrinho_hidden").value = listaTexto;
+            document.getElementById("itens_hidden").value = JSON.stringify(itens);
+        }
+
+    </script>
 </body>
 </html>
