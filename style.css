@@ -81,7 +81,7 @@ body {
     border-bottom: none;
 }
 .td_pedido{
-    font-size: 18px;
+    font-size: 20px;
     border: 1px solid;
 }
 
@@ -120,6 +120,11 @@ body {
     width: 95%;
     height: auto;
     border: 1px solid;
+}
+.categoria_pratos button{
+    text-align: center;
+    font-size: 20px;
+    height: 30px;
 }
 .btn_prato{
     width: 20vw;

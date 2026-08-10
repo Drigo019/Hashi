@@ -1,6 +1,7 @@
 <?php
     require 'conexao.php';
-    require 'cadastro_venda.php';
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +22,7 @@
                     </button>
                 </div>
                 <div id="novo_pedido" align="center">
-                    <button class="btn" onclick="window.location.href='novo_pedido.html'">
+                    <button class="btn" onclick="window.location.href='novo_pedido.php'">
                         <img class="icons_menu" src="icons/carrinho_adicionar.png">
                         <div style="font-size: 18px;">Novo Pedido</div>
                     </button>
@@ -31,33 +32,8 @@
                         <img class="icons_menu" src="icons/pedido.png">
                         <div style="font-size: 18px;">Ver Pedidos</div>
                     </button>
-                </div>                
-                    <div id="" align="center">
-                        <button class="btn" onclick="window.location.href='acrescimo.html'">
-                            <img class="icons_menu" src="icons/acrecimo.png">
-                            <div style="font-size: 18px;">Acrécimos</div>
-                        </button>
-                    </div>
-                <div id="" align="center">
-                    <button class="btn" onclick="window.location.href=''">
-                        <img class="icons_menu" src="icons/panela.png">
-                        <div style="font-size: 18px;">Produtos</div>
-                    </button>
-                </div>
-
-                <div id="" align="center">
-                    <button class="btn" onclick="window.location.href=''">
-                        <img class="icons_menu" src="">
-                        <div style="font-size: 18px;"></div>
-                    </button>
-                </div>
-                <div id="" align="center">
-                    <button class="btn" onclick="window.location.href=''">
-                        <img class="icons_menu" src="">
-                        <div style="font-size: 18px;"></div>
-                    </button>
-                </div>
-            </div>
+                </div>  
+            </div>              
             <div>
                 <button id="btn_menu" onclick="alternarDiv()">
                     <img id="ico_menu" src="icons/seta_direita.png" align="right">
@@ -97,11 +73,25 @@
                                 <th class="th_titulo">Valor</th>
                                 <th class="th_titulo">Forma de pagamento</th>
                                 <th class="th_titulo">Data</th>
+                                <th class="th_titulo">Tipo de recebimento</th>
                                 <th class="th_titulo" colspan="4">Funções</th>
                             </tr>
 
                             <?php 
-                                $sql = "SELECT * FROM vendas";
+                            
+                                $sql = "
+                                SELECT 
+                                    v.id_venda,
+                                    c.nome,
+                                    c.telefone,
+                                    v.total,
+                                    v.forma_pagamento,
+                                    v.tipo_entrega,
+                                    v.data
+                                FROM vendas v
+                                JOIN clientes c ON c.id_cliente = v.id_cliente
+                                LEFT JOIN enderecos_cliente e ON e.id_endereco_cliente = v.id_endereco_cliente
+                                ";
                                 $resultado = mysqli_query($conexao, $sql); 
                                 while($linha = $resultado->fetch_assoc()) { 
                             ?>
@@ -109,11 +99,11 @@
                             <tr class="tr">
                                 <td class="th"><?php echo htmlspecialchars($linha['id_venda']); ?></td>
                                 <td class="th"><?php echo htmlspecialchars($linha['nome']); ?></td>
-                                <td class="th"><?php echo htmlspecialchars($linha['telefone']); ?></td> 
-                                <td class="th"><?php echo htmlspecialchars($linha['valor']); ?></td>
-                                <td class="th"><?php echo htmlspecialchars($linha['data']); ?></td>
-                                <td class="th"><?php echo htmlspecialchars($linha['status']); ?></td>
-
+                                <td class="th"><?php echo htmlspecialchars($linha['telefone']); ?></td>
+                                <td class="th"><?php echo htmlspecialchars($linha['total']); ?></td>
+                                <td class="th"><?php echo htmlspecialchars($linha['forma_pagamento']); ?></td>
+                                <td class="th"><?php echo date('d/m/Y H:i', strtotime($linha['data'])); ?></td>
+                                <td class="th"><?php echo htmlspecialchars($linha['tipo_entrega']); ?></td>
                                 <td class="th">
                                     <form method="POST" action="concluir_pedido.php" onsubmit="return confirm('Tem certeza que deseja concluir?');">
                                         <input type="hidden" name="id_concluir" value="<?php echo $linha['id_venda']; ?>">
