@@ -1,7 +1,5 @@
 <?php
     require 'conexao.php';
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -74,7 +72,8 @@
                                 <th class="th_titulo">Forma de pagamento</th>
                                 <th class="th_titulo">Data</th>
                                 <th class="th_titulo">Tipo de recebimento</th>
-                                <th class="th_titulo" colspan="4">Funções</th>
+                                <th class="th_titulo">Status</th>
+                                <th class="th_titulo" colspan="3">Funções</th>
                             </tr>
 
                             <?php 
@@ -87,7 +86,8 @@
                                     v.total,
                                     v.forma_pagamento,
                                     v.tipo_entrega,
-                                    v.data
+                                    v.data,
+                                    v.status
                                 FROM vendas v
                                 JOIN clientes c ON c.id_cliente = v.id_cliente
                                 LEFT JOIN enderecos_cliente e ON e.id_endereco_cliente = v.id_endereco_cliente
@@ -104,13 +104,15 @@
                                 <td class="th"><?php echo htmlspecialchars($linha['forma_pagamento']); ?></td>
                                 <td class="th"><?php echo date('d/m/Y H:i', strtotime($linha['data'])); ?></td>
                                 <td class="th"><?php echo htmlspecialchars($linha['tipo_entrega']); ?></td>
-                                <td class="th">
-                                    <form method="POST" action="concluir_pedido.php" onsubmit="return confirm('Tem certeza que deseja concluir?');">
-                                        <input type="hidden" name="id_concluir" value="<?php echo $linha['id_venda']; ?>">
-                                        <button class="btn_funcao" type="submit">
-                                            ✅
-                                        </button>
-                                    </form>
+                                <td class="th"> 
+                                    <select id="status" class="select_status    ">
+                                        <option value="criado"> Criado </option>
+                                        <option value="aceito"> Aceito </option>
+                                        <option value="preparando"> Preparando </option>
+                                        <option value="pronto"> Pronto </option>
+                                        <option value="saiu_para_entrega"> Saiu para entrega </option>
+                                        <option value="entregue"> Entregue </option>
+                                    </select> 
                                 </td>
                                 <td class="th">
                                     <form method="POST" action="cancelar_pedido.php" onsubmit="return confirm('Tem certeza que deseja cancelar?');">
