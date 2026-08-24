@@ -201,8 +201,12 @@
                                 <td colspan="2" style="text-align: center;"><h2>Dados do cliente:</h2></td>
                             </tr>
                             <tr>
-                                <td class="td_pedido">Telefone:</td>
-                                <td class="td_pedido"><input type="text" name="telefone" id="telefone" style="font-size: 20px;" required></td>
+                                <div id="campo_cliente">
+                                    <td class="td_pedido">Telefone:</td>
+                                    <td class="td_pedido"><input type="text" name="telefone" autocomplete="off" id="telefone" style="font-size: 20px;" required>
+                                        <div id="lista_clientes"></div>
+                                    </td>
+                                </div>
                             </tr>
                             <tr>
                                 <td class="td_pedido">Nome:</td>
@@ -454,6 +458,86 @@
             document.getElementById("itens_hidden").value = JSON.stringify(itens);
         }
 
-    </script>
+/*=================
+    BUSCAR CLIENTES PELO TELEFONE
+=================*/
+    const campoTelefoneCliente = document.getElementById("telefone");
+    const listaClientesBusca = document.getElementById("lista_clientes");
+
+        campoTelefoneCliente.addEventListener("input", function () {
+            const valorTelefone = campoTelefoneCliente.value.trim();
+
+            // Limpa a lista
+            listaClientesBusca.innerHTML = "";
+
+            // Só pesquisa depois de 3 caracteres
+            if (valorTelefone.length < 3) {
+            return;
+        }
+
+    fetch("buscar_clientes.php?telefone=" + encodeURIComponent(valorTelefone))
+
+    .then(function (response) {
+        return response.json();
+    })
+
+    .then(function (clientes) {
+
+        listaClientesBusca.innerHTML = "";
+
+        // Nenhum cliente encontrado
+        if (!Array.isArray(clientes) || clientes.length === 0) {
+            return;
+        }
+
+        // Cria cada opção de cliente
+        clientes.forEach(function (cliente) {
+
+        const opcaoCliente = document.createElement("div");
+
+        opcaoCliente.className = "opcao_cliente";
+
+        opcaoCliente.innerHTML = `
+        <strong>${cliente.nome}</strong>
+        <br>
+        <span>${cliente.telefone}</span>
+        `;
+
+        /*=================
+        QUANDO CLICAR NO CLIENTE
+        =================*/
+            opcaoCliente.addEventListener("click", function () {
+                // Telefone
+                campoTelefoneCliente.value = cliente.telefone;
+                // Nome
+                document.getElementById("nome").value = cliente.nome;
+                // Rua
+                document.getElementById("rua").value =
+                cliente.rua || "";
+                // Número
+                document.getElementById("numero").value =
+                cliente.numero || "";
+                // Bairro
+                const campoBairro = document.getElementById("bairro");
+
+                if (cliente.bairro) {
+                    campoBairro.value = cliente.bairro;
+                } 
+                else {
+                    campoBairro.value = "";
+                }
+                // Fecha a lista
+                listaClientesBusca.innerHTML = "";
+            });
+
+            // Adiciona a opção na lista
+            listaClientesBusca.appendChild(opcaoCliente);
+        });
+    })
+    .catch(function (erro) {
+        console.error("Erro ao buscar clientes:", erro);
+    });
+    });
+</script>
 </body>
 </html>

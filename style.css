@@ -419,3 +419,45 @@ body {
 div[style*="border: 1px solid"] {
     overflow: hidden;
 }
+
+/*=================
+    BUSCAR CLIENTE
+=================*/
+#lista_clientes {
+    width: 250px;
+    max-height: 200px;
+    overflow-y: auto;
+
+    background-color: white;
+
+    border: 1px solid #999;
+
+    position: absolute;
+
+    z-index: 9999;
+
+    text-align: left;
+}
+
+.opcao_cliente {
+    padding: 10px;
+
+    border-bottom: 1px solid #ddd;
+
+    cursor: pointer;
+
+    background-color: white;
+}
+
+.opcao_cliente:hover {
+    background-color: #eeeeee;
+}
+
+.opcao_cliente strong {
+    font-size: 18px;
+}
+
+.opcao_cliente span {
+    font-size: 18px;
+    color: #666;
+}

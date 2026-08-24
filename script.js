@@ -100,9 +100,9 @@ function atualizarCarrinho() {
 }
 
 
-// ==============================
-// STATUS DOS PEDIDOS
-// ==============================
+/* ==============================
+    STATUS DOS PEDIDOS
+============================== */ 
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -203,3 +203,65 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+/* ==============================
+    PESQUISA DE CLIENTE
+============================== */ 
+const telefone = document.getElementById("telefone");
+const listaClientes = document.getElementById("lista_clientes");
+
+telefone.addEventListener("input", function () {
+
+    const numero = this.value.trim();
+
+    // Se tiver poucos números, não pesquisa
+    if (numero.length < 3) {
+        listaClientes.innerHTML = "";
+        return;
+    }
+
+    fetch("buscar_clientes.php?telefone=" + encodeURIComponent(numero))
+        .then(response => response.json())
+        .then(clientes => {
+
+            listaClientes.innerHTML = "";
+
+            if (clientes.length === 0) {
+                listaClientes.innerHTML =
+                    '<div class="cliente_nao_encontrado">Nenhum cliente encontrado</div>';
+                return;
+            }
+
+            clientes.forEach(cliente => {
+
+                const div = document.createElement("div");
+
+                div.classList.add("opcao_cliente");
+
+                div.innerHTML = `
+                    <strong>${cliente.nome}</strong>
+                    <span>${cliente.telefone}</span>
+                `;
+
+                div.addEventListener("click", function () {
+
+                    telefone.value = cliente.telefone;
+
+                    // Se você tiver um campo para o nome:
+                    const campoNome = document.getElementById("nome");
+
+                    if (campoNome) {
+                        campoNome.value = cliente.nome;
+                    }
+
+                    // Esconde a lista
+                    listaClientes.innerHTML = "";
+                });
+
+                listaClientes.appendChild(div);
+            });
+        })
+        .catch(error => {
+            console.error("Erro ao buscar clientes:", error);
+        });
+}); 
