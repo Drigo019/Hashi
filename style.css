@@ -1,54 +1,82 @@
+/* ==========================
+   CONFIGURAÇÕES GERAIS
+========================== */
+
 body {
     background-color: rgb(255, 255, 255);
     font-family: Arial, Helvetica, sans-serif;
-}
-.body{
-    overflow: hidden; 
-    border: none; margin: 0;
+    margin: 0;
     padding: 0;
 }
-.btn {
-        height: 50px;
-        width: 170px;
-        border: 1px solid transparent;
-        background-color: rgb(219, 0, 0);
-        margin-top: 10px;
-        color: white;
-        text-align: left;
-        display: flex;
-        align-items: center;
-        font-size: 14px;
-        cursor: pointer;
+
+
+.body {
+    overflow: hidden;
+    border: none;
+    margin: 0;
+    padding: 0;
 }
+
+
+/* ==========================
+   MENU
+========================== */
+
+.btn {
+    height: 50px;
+    width: 170px;
+    border: 1px solid transparent;
+    background-color: rgb(219, 0, 0);
+    margin-top: 10px;
+    color: white;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+
 .icons_menu {
     margin-right: 5px;
     height: 25px;
     width: 25px;
 }
-.div{
+
+
+.div {
     width: 80%;
 }
+
+
 .girado {
     transform: rotate(180deg);
 }
-.lab{
+
+
+.lab {
     display: grid;
     place-items: center;
     margin-top: 10px;
     font-size: 25px;
 }
+
+
 #menu {
     max-width: 0;
     overflow: hidden;
     transition: max-width 0.4s ease;
     height: 634px;
     width: 190px;
-    background-color: rgb(0, 0, 0) ;
+    background-color: rgb(0, 0, 0);
 }
-/* Quando estiver aberto */
+
+
 #menu.aberto {
-    max-width: 300px; /* ajusta conforme o tamanho do seu menu */
-}   
+    max-width: 300px;
+}
+
+
 #btn_menu {
     height: 30px;
     width: 30px;
@@ -58,75 +86,97 @@ body {
     border-bottom-right-radius: 10px;
     cursor: pointer;
 }
+
+
 #ico_menu {
     height: 20px;
     width: 20px;
     transition: transform 0.3s ease;
 }
+
+
 #endereco {
     transition: all 0.3s ease;
 }
 
 
+/* ==========================
+   NOVO PEDIDO
+========================== */
 
-/*====================
-        NOVO PEDIDO
-====================*/
-
-.div_nov_ped{
+.div_nov_ped {
     border: 1px solid;
     width: 34%;
     border-left: none;
     border-top: none;
     border-bottom: none;
 }
-.td_pedido{
+
+
+.td_pedido {
     font-size: 20px;
     border: 1px solid;
 }
 
-.tabela{
+
+.tabela {
     background-color: #bbbbbb96;
 }
-.select{
+
+
+.select {
     width: 100%;
     text-align: center;
     font-size: 19px;
 }
-#div_dados{
+
+
+#div_dados {
     height: 25vh;
     border: 1px solid;
     display: grid;
     align-items: center;
     text-align: center;
 }
-#div_entrega{
+
+
+#div_entrega {
     width: 100%;
     height: 40vh;
     border: 1px solid;
     text-align: center;
 }
-#div_form_pag{
+
+
+#div_form_pag {
     height: 40vh;
     border: 1px solid;
     display: grid;
     align-items: center;
     text-align: center;
 }
-.carrinho_vazio{
+
+
+.carrinho_vazio {
     font-size: 30px;
 }
-.categoria_pratos{
+
+
+.categoria_pratos {
     width: 95%;
     height: auto;
     border: 1px solid;
 }
-.categoria_pratos button{
+
+
+.categoria_pratos button {
     text-align: center;
     font-size: 20px;
     height: 30px;
 }
-.btn_prato{
+
+
+.btn_prato {
     width: 20vw;
     height: 20px;
     text-align: center;
@@ -137,47 +187,55 @@ body {
 }
 
 
-/*====================
-        iNÍCIO
-====================*/
-
-/* Tabela de pagamentos */
-#tabela_form_pag{
+/* ==========================
+   INÍCIO
+========================== */
+#tabela_form_pag {
     text-align: center;
     height: 100%;
     width: 100%;
 }
-.total_form_pag{
+
+
+.total_form_pag {
     border-right: 170px solid transparent;
 }
-.form_pag{
+
+
+.form_pag {
     border-left: 170px solid transparent;
     text-align: start;
 }
-.tr_form_pag{
+
+
+.tr_form_pag {
     border-color: 1px solid rgb(0, 0, 0);
 }
 
 
-/* Grafico */
-.grafico{
+/* ==========================
+   GRÁFICO
+========================== */
+.grafico {
     border: 1px solid;
     height: 300px;
     width: 500px;
     margin-left: 20px;
     margin-top: 20px;
 }
+
+
 .card-grafico {
     background-color: #ffffff;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgb(255, 255, 255);
     padding: 30px;
     width: 100%;
-    max-width: 450px; /* Impede que o gráfico fique gigante */
+    max-width: 450px;
     text-align: center;
 }
 
-/* Título do gráfico */
+
 .card-grafico h2 {
     margin-top: 0;
     margin-bottom: 20px;
@@ -185,91 +243,161 @@ body {
     font-size: 1.4rem;
 }
 
-/* Container do canvas para garantir a proporção */
+
 .canvas-container {
     position: relative;
     width: 100%;
 }
 
-/*====================
-        VER PEDIDOS 
-====================*/
 
-#barra_pesquisa_pedidos{
+/* ==========================
+   VER PEDIDOS
+========================== */
+#barra_pesquisa_pedidos {
     margin-top: 30px;
     margin-left: 5%;
     width: 75%;
     height: 30px;
 }
-#btn_pesquisa_pedidos{
+
+
+#btn_pesquisa_pedidos {
     width: 50px;
     height: 35px;
     cursor: pointer;
 }
-#botoes{
-    input[type="button"] {
-        width: 120px;
-        height: 30px;
-        cursor: pointer;
-    }
+
+
+#botoes input[type="button"] {
+    width: 120px;
+    height: 30px;
+    cursor: pointer;
 }
+
+
 #botoes_status input {
     transition: transform 0.2s ease;
 }
-#botoes_status input:hover{
+
+
+#botoes_status input:hover {
     transform: scale(1.2);
-}   
+}
 
 
 #botoes_data input {
     transition: transform 0.2s ease;
 }
+
+
 #botoes_data input:hover {
     transform: scale(1.2);
 }
 
-/* Área geral */
+
+/* ==========================
+   ÁREA DA TABELA
+========================== */
 #area_tabela {
     height: 100%;
     overflow-y: auto;
     overflow-x: auto;
 }
 
-/* Tabela */
+
+/* ==========================
+   TABELA
+========================== */
 #table_clientes {
     width: 86%;
     border-collapse: collapse;
     font-family: Arial, sans-serif;
-    background-color: #fff;
 }
 
-/* Cabeçalho */
+
 .th_titulo {
-    background-color: #000000;
-    color: white;
     padding: 12px;
     text-align: center;
     font-weight: bold;
+    background-color: #222;
+    color: white;
 }
 
-/* Linhas */
-.tr:nth-child(even) {
-    background-color: #f5f5f5;
-}
 
 .tr:hover {
-    background-color: #ffe5e5;
     transition: 0.2s;
 }
 
-/* Células */
+
 .th {
     padding: 10px;
     text-align: center;
-    border-bottom: 1px solid #ddd;
 }
 
-/* Botões */
+
+/* ==========================
+   CORES DOS PEDIDOS
+========================== */
+/* CRIADO */
+#table_clientes .linha_pedido.status-criado td {
+    background-color: #fff3cd !important;
+    color: #000;
+}
+
+
+/* ACEITO */
+#table_clientes .linha_pedido.status-aceito td {
+    background-color: #cfe2ff !important;
+    color: #000;
+}
+
+
+/* PREPARANDO */
+#table_clientes .linha_pedido.status-preparando td {
+    background-color: #e2d9f3 !important;
+    color: #000;
+}
+
+
+/* PRONTO */
+#table_clientes .linha_pedido.status-pronto td {
+    background-color: #d1e7dd !important;
+    color: #000;
+}
+
+
+/* SAIU PARA ENTREGA */
+#table_clientes .linha_pedido.status-saiu_para_entrega td {
+    background-color: #cff4fc !important;
+    color: #000;
+}
+
+
+/* ENTREGUE */
+#table_clientes .linha_pedido.status-entregue td {
+    background-color: #198754 !important;
+    color: white !important;
+}
+
+
+/* ==========================
+   SELECT DE STATUS
+========================== */
+.select_status {
+    width: 100%;
+    min-width: 140px;
+    padding: 6px;
+    text-align: center;
+    font-size: 15px;
+    cursor: pointer;
+    border: 1px solid #555;
+    border-radius: 4px;
+}
+
+
+/* ==========================
+   BOTÕES DE FUNÇÃO
+========================== */
 .btn_funcao {
     background-color: #990000ab;
     border: none;
@@ -279,17 +407,15 @@ body {
     transition: 0.2s;
 }
 
-/* Hover botão */
+
 .btn_funcao:hover {
     transform: scale(1.05);
 }
 
-/* Container externo */
+
+/* ==========================
+   CONTAINER EXTERNO
+========================== */
 div[style*="border: 1px solid"] {
     overflow: hidden;
-}
-.select_status {
-    width: 100%;
-    height: 35px;
-    font-size: 18px;
 }

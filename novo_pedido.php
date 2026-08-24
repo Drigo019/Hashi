@@ -83,6 +83,7 @@
                     <h2> TEMAKIS </h2>
                     <button type="button" onclick="adicionarAoCarrinho('Temaki Filadelfia', 32.00)">Temaki Filadelfia</button>
                     <button type="button" onclick="adicionarAoCarrinho('Temaki de camarão crisp', 33.00)">Temaki de camarão crisp</button>
+                    <button type="button" onclick="adicionarAoCarrinho('Temaki de Salmão crisp', 33.00)">Temaki de Salmão crisp</button>
                     <button type="button" onclick="adicionarAoCarrinho('Temaki só salmão', 33.00)">Temaki só salmão</button>
                     <button type="button" onclick="adicionarAoCarrinho('Temaki de shimeji', 30.00)">Temaki de shimeji</button>
                     <button type="button" onclick="adicionarAoCarrinho('Temaki hot', 35.00)">Temaki hot</button>
@@ -94,6 +95,7 @@
                     <button type="button" onclick="adicionarAoCarrinho('Mini hot', 18.00)">Mini hot</button>
                     <button type="button" onclick="adicionarAoCarrinho('Hot roll', 20.00)">Hot roll</button>
                     <button type="button" onclick="adicionarAoCarrinho('Ebi hot', 22.00)">Ebi hot</button>
+                    <button type="button" onclick="adicionarAoCarrinho('Promo hot', 50.00)">Promo Hot</button>
                     <button type="button" onclick="adicionarAoCarrinho('Super hot', 50.00)">Super hot</button>
                 </div> 
                 <div class="categoria_pratos" style="display: grid;">
@@ -138,6 +140,10 @@
                     <button type="button" onclick="adicionarAoCarrinho('Combiando sem nada cru', 10.00)">Combinado sem nada cru</button>
                 </div>
                 <div class="categoria_pratos" style="display: grid;">
+                    <h2>SOBREMESAS:</h2>
+                    <button type="button" onclick="adicionarAoCarrinho('Haruaki de banana com chocolate', 14.00)">Harumaki de Banana com Chocolate</button>
+                    <button type="button" onclick="adicionarAoCarrinho('Hot roll de banana com chocolate', 14.00)">Hot roll de banana com chocolate</button>                </div>
+                <div class="categoria_pratos" style="display: grid;">
                     <h2> BEBIDAS: </h2>
                     <div class="categoria_pratos" style="display: grid; margin-left: 8px;">
                         <h3> REFRIGERANTES </h3>
@@ -173,6 +179,8 @@
                     <div class="categoria_pratos" style="display: grid; margin-left: 8px;">
                         <h2> SUCOS </h2>
                         <button type="button" onclick="adicionarAoCarrinho('Suco de uva Delvale lata', 7.00)">Suco de uva Delvale lata</button>
+                        <button type="button" onclick="adicionarAoCarrinho('Suco de uva 1,3L', 20.00)"> Suco de uva 1,3L</button>
+                        <button type="button" onclick="adicionarAoCarrinho('Suco de laranja 1,3L', 20.00)"> Suco de laranja 1,3L</button>
                     </div>
                 </div>
             </div>
@@ -211,7 +219,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2" class="td_pedido">
-                                    <select class="select"  name="tipo_entrega" id="tipo_entrega">
+                                    <select class="select"  name="tipo_entrega" id="tipo_entrega" onchage="atualizarBanco()">
                                         <option value="retirada" selected>Retirada</option>
                                         <option value="entregar">Entregar</option>
                                     </select>
@@ -230,7 +238,8 @@
                             <tr>
                                 <td class="td_pedido">Bairro:</td>
                                 <td class="td_pedido">
-                                    <select name="bairro" id="bairro" style="height: 100%;"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     >
+                                    <select name="bairro" id="bairro" style="height: 100%;">
+                                        <option value=" "> </option>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 >
                                         <option value="Alto do Vale II"> Alto do Vale II</option>
                                         <option value="Anita Venturi Pricoli">Anita Venturi Pricoli</option>
                                         <option value="Aparecida">Aparecida</option>
@@ -240,69 +249,72 @@
                                         <option value="Cecap I">Cecap I</option>
                                         <option value="Cecap II">Cecap II</option>
                                         <option value="Centro">Centro</option>
-                                        <option value="Chácara Bela Vista">Chácara Bela Vista</option>
+                                        <option value="Bela Vista">Bela Vista</option>
                                         <option value="Chácara do Vale">Chácara do vale</option>
-                                        <option value="Chácara dos Ipês">Chácara dos Ipés</option>
-                                        <option value="Chácara Palmeirinha">Chácara Palmeirinha</option>
-                                        <option value="Chácara São Domingos">Chácara São Domingos</option>
-                                        <option value="Chácara São Pelegrino">Chácara São Pelegrino</option>
-                                        <option value="Condomínio Casas de Monte Belo">Condomínio Casas Monte Belo</option>
-                                        <option value="Conjunto Habitacional Francisco Garófalo">Conjunto Habirtacional Francisco Garófalo</option>
-                                        <option value="Conjunto Habitacional Gabriel do Ó">Conjunto Habitacional Gabriel do Ó</option>
-                                        <option value="Conjunto Habitacional Gilberto Rossetti">Conjunto Habitacional Gilberto Rossetti</option>
-                                        <option value="Conjunto Habitacional Gildo Geraldo">Conjunto Habitacional Gildo Geraldo</option>
-                                        <option value="Conjunto Habitacional Luiz Fernandes Dias">Conjunto Habitacional Luiz Fernandes Dias</option>
-                                        <option value="Conjunto Habitacional Nelson Niero">Conjunto Habitacional Nelson Niero</option>
-                                        <option value="Descanso"> Descanso</option>
-                                        <option value="Distrito Industrial I"> Distrito Industrial I</option>
-                                        <option value="Distrito Industrial II"> Distrito Industrial II</option>
-                                        <option value="Jardim Alcebiades Quilice"> Jardim Alcebiades Quilice</option>
-                                        <option value="Jardim Alvorada"> Jardim Alvorada</option>
-                                        <option value="Jardim Bianchesi"> Jardim Bianchesi</option>
-                                        <option value="Jardim Botânico">Jardim Botânico</option>
-                                        <option value="Jardim Central Prícoli">Jardim Central Prícoli</option>
-                                        <option value="Jardim Chico Piscina">Jardim Chico Piscina</option>
-                                        <option value="Jardim Colina Verde">Jardim Colina Verde</option>
-                                        <option value="Jardim da Paineira">Jardim da Paineira</option>
-                                        <option value="Jardim das Figueiras">Jardim Figueiras</option>
-                                        <option value="Jardim do Imperador">Jardim do Imperador</option>
-                                        <option value="Jargim Gatolândia">Jardim Gatolândia</option>
-                                        <option value="Jardim José André de Lima">Jardim José André de Lima</option>
-                                        <option value="Jardim José Justi">Jardim José Justi</option>
-                                        <option value="Jardim Lavínia">Jardim Lavínia</option>
-                                        <option value="Jardim Maziero">Jardim Maziero</option>
-                                        <option value="Jardim Morro Azul">Jardim Morro Azul</option>
-                                        <option value="Jardim Nova Mococa">Jardim Nova Mococa</option>
-                                        <option value="Jardim Planalto Verde">Jardim Planalto Verde</option>
-                                        <option value="Jardim Primavera">Jardim Primavera</option>
-                                        <option value="Jardim Progresso">Jardim Progresso</option>
-                                        <option value="Jardim Residencil do Bosque">Jardim Residencial do bosque</option>
-                                        <option value="Jardim Riachuelo II">Jardim Riachuelo II</option>
-                                        <option value="Jardim Rigobelo">Jardim Rigobelo</option>
-                                        <option value="Jardim Santa Cecília">Jardim Santa Cecília</option>
-                                        <option value="Jardim Santa Clara">Jardim Santa Clara</option>
-                                        <option value="Jardim Santa Luzia">Jardim Santa Luizia</option>
-                                        <option value="Jardim Santa Maria">Jardim Santa Maria</option>
-                                        <option value="Jardim São Benedito">Jardim São Benedito</option>
-                                        <option value="Jardim São Domingos">Jardim São Domingos</option>
-                                        <option value="Jardim São Francisco">Jardim São Francisco</option>
-                                        <option value="Jardim São José">Jardim São José </option>
-                                        <option value="Jardim São Luiz">Jardim São Luiz</option>
-                                        <option value="Loteamento Altos do vale">Loteamento Altos do Vale</option>
+                                        <option value="Chácarados Ipês">Chácara dos Ipés</option>
+                                        <option value="Palmeirinha">Palmeirinha</option>
+                                        <option value="São Domingos">São Domingos</option>
+                                        <option value="São Pelegrino">São Pelegrino</option>
+                                        <option value="Cohab I">Cohab I</option>
+                                        <option value="Cohab II">Cohab II</option>
+                                        <option value="Casas de Monte Belo">Condomínio Casas Monte Belo</option>
+                                        <option value="Francisco Garófalo">Francisco Garófalo</option>
+                                        <option value="Gabriel do Ó">Gabriel do Ó</option>
+                                        <option value="Gilberto Rossetti">Gilberto Rossetti</option>
+                                        <option value="Gildo Geraldo">Gildo Geraldo</option>
+                                        <option value="Luiz Fernandes Dias">Luiz Fernandes Dias</option>
+                                        <option value="Nelson Niero">Nelson Niero</option>
+                                        <option value="Descanso">escanso</option>
+                                        <option value="Distrito Industrial I">Distrito Industrial I</option>
+                                        <option value="Distrito Industrial II">Distrito Industrial II</option>
+                                        <option value="Alcebiades Quilice">Alcebiades Quilice</option>
+                                        <option value="Alvorada">Alvorada</option>
+                                        <option value="Bianchesi">Bianchesi</option>
+                                        <option value="Botânico">Botânico</option>
+                                        <option value="Central Prícoli">Central Prícoli</option>
+                                        <option value="Chico Piscina">Chico Piscina</option>
+                                        <option value="Colina Verde">Colina Verde</option>
+                                        <option value="Paineira">Paineira</option>
+                                        <option value="Figueiras">Figueiras</option>
+                                        <option value="Imperador">Imperador</option>
+                                        <Option value="Flaboyans">Flaboyans</option>
+                                        <option value="Gatolândia"> Gatolândia</option>
+                                        <option value="José André de Lima"> José André de Lima</option>
+                                        <option value="José Justi">José Justi</option>
+                                        <option value="Lavínia">Lavínia</option>
+                                        <option value="Maziero">Maziero</option>
+                                        <option value="Morro Azul"> Morro Azul</option>
+                                        <option value="Nova Mococa"> Nova Mococa</option>
+                                        <option value="Planalto Verde"> Planalto Verde</option>
+                                        <option value="Primavera"> Primavera</option>
+                                        <option value="Progresso"> Progresso</option>
+                                        <option value="Residencil do Bosque">Residencial do bosque</option>
+                                        <option value="Riachuelo II"> Riachuelo II</option>
+                                        <option value="Rigobelo"> Rigobelo</option>
+                                        <option value="Santa Cecília"> Santa Cecília</option>
+                                        <option value="Santa Clara"> Santa Clara</option>
+                                        <option value="Santa Luzia"> Santa Luzia</option>
+                                        <option value="Santa Maria"> Santa Maria</option>
+                                        <option value="São Benedito"> São Benedito</option>
+                                        <option value="São Domingos"> São Domingos</option>
+                                        <option value="São Francisco"> São Francisco</option>
+                                        <option value="São José"> São José </option>
+                                        <option value="São Luiz"> São Luiz</option>
+                                        <option value="Altos do vale">Altos do Vale</option>
                                         <option value="Lago dos Ipês">Lago dos Ipês</option>
-                                        <option value="Loteamento Residencial Vale Verde">Loteamento Residencial Vale Verde</option>
-                                        <option value="Loteamento Santa Emília">Loteamento Santa Emília</option>
+                                        <option value="Vale Verde">Vale Verde</option>
+                                        <option value="Santa Emília">Santa Emília</option>
                                         <option value="Mocoquinha">Mocoquinha</option>
                                         <option value="Nenê Pereira Lima">Nenê Pereira Lima</option>
                                         <option value="Parque das Canoas">Paque das Canoas</option>
-                                        <option value="Parque dos Manacás I"> Parque DOs Manacás</option>
+                                        <option value="Parque dos Manacás I"> Parque Dos Manacás</option>
                                         <option value="Portal da Cidade">Portal da Cidade</option>
-                                        <option value="Residencial Barra Feita">Residencial Barra Feita</option>
-                                        <option value="Residencial Carlito Quilici">Residencial Carlito Quilici</option>
-                                        <option value="Residencial Itálico Maziero">Residencial Itálico Maziero</option>
-                                        <option value="Residencial Jardim José Justi II">Residencial Jardim José Justi II</option>
-                                        <option value="Residencial Jardim Miguel Gomes">Residencial Jardim Miguel Gomes</option>
-                                        <option value="Residencial Samanbaia">Residencial Samanbaia</option>
+                                        <option value="Barra Feita">Barra Feita</option>
+                                        <option value="Carlito Quilici">Carlito Quilici</option>
+                                        <option value="Itálico Maziero">Itálico Maziero</option>
+                                        <option value="José Justi II"> José Justi II</option>
+                                        <option value="Miguel Gomes"> Miguel Gomes</option>
+                                        <option value="Samanbaia">Samanbaia</option>
                                         <option value="Santa Helena">Santa Helena</option>
                                         <option value="Santa Terezinha I">Santa Terezinha I</option>
                                         <option value="Santa Terezinha II">Santa Terezinha II</option>
@@ -313,8 +325,9 @@
                                         <option value="Vila Mariana">Vila Mariana</option>
                                         <option value="Vila Naufel">Vila Naufel</option>
                                         <option value="Vila Quintino">Vila Quintino</option>
-                                        <option value="Vila Santa Cruz">Vila Sanmta Cruz</option>
+                                        <option value="Vila Santa Cruz">Vila Santa Cruz</option>
                                         <option value="Vila Santa Rosa">Vila Santa Rosa</option>
+                                        <option value="Lago azul">Lago Azul</option>
                                     </select>
                                 </td>
                             </tr>

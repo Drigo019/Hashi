@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 10/08/2026 às 09:03
+-- Tempo de geração: 11/08/2026 às 20:42
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -62,7 +62,8 @@ CREATE TABLE `enderecos_cliente` (
 --
 
 INSERT INTO `enderecos_cliente` (`id_endereco_cliente`, `id_cliente`, `rua`, `numero`, `bairro`, `obs_endereco`) VALUES
-(8, 12, '1', 1, '', NULL);
+(8, 12, '1', 1, '', NULL),
+(9, 12, '', 0, 'Alto do Vale II', NULL);
 
 -- --------------------------------------------------------
 
@@ -134,16 +135,18 @@ CREATE TABLE `vendas` (
   `total` float(10,2) DEFAULT NULL,
   `forma_pagamento` enum('dinheiro','cartao','pix','fiado') NOT NULL,
   `obs_pagamento` varchar(255) DEFAULT NULL,
-  `tipo_entrega` enum('entrega','retirada') NOT NULL
+  `tipo_entrega` enum('entrega','retirada') NOT NULL,
+  `status` enum('criado','aceito','preparando','pronto','saiu para entrega','entregue') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Despejando dados para a tabela `vendas`
 --
 
-INSERT INTO `vendas` (`id_venda`, `id_cliente`, `id_endereco_cliente`, `id_produto`, `data`, `total`, `forma_pagamento`, `obs_pagamento`, `tipo_entrega`) VALUES
-(23, 12, 8, NULL, '2026-08-10 03:59:52', 90.00, 'dinheiro', '1', ''),
-(24, 12, NULL, NULL, '2026-08-10 04:00:07', 62.00, 'dinheiro', '', 'retirada');
+INSERT INTO `vendas` (`id_venda`, `id_cliente`, `id_endereco_cliente`, `id_produto`, `data`, `total`, `forma_pagamento`, `obs_pagamento`, `tipo_entrega`, `status`) VALUES
+(23, 12, 8, NULL, '2026-08-10 03:59:52', 90.00, 'dinheiro', '1', '', 'aceito'),
+(24, 12, NULL, NULL, '2026-08-10 04:00:07', 62.00, 'dinheiro', '', 'retirada', 'aceito'),
+(25, 12, 9, NULL, '2026-08-11 15:19:04', 120.00, 'cartao', '', '', 'criado');
 
 --
 -- Índices para tabelas despejadas
@@ -214,7 +217,7 @@ ALTER TABLE `clientes`
 -- AUTO_INCREMENT de tabela `enderecos_cliente`
 --
 ALTER TABLE `enderecos_cliente`
-  MODIFY `id_endereco_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_endereco_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de tabela `enderecos_fornecedor`
@@ -244,7 +247,7 @@ ALTER TABLE `produtos`
 -- AUTO_INCREMENT de tabela `vendas`
 --
 ALTER TABLE `vendas`
-  MODIFY `id_venda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_venda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- Restrições para tabelas despejadas

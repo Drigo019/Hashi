@@ -1,184 +1,406 @@
 <?php
-    require('conexao.php');
+require('conexao.php');
 
-    $nome = $_POST['nome'];
-    $telefone = $_POST['telefone'];
-    $carrinho = $_POST['carrinho_lista'];
-    $rua = $_POST['rua'];
-    $numero = $_POST['numero'];
-    $bairro = $_POST['bairro'];
-    $obs_entrega = $_POST['obs_entrega'];
-    $total = $_POST['total'];
-    $forma_pagamento = $_POST['form_pag'];
-    $obs_pagamento = $_POST['obs_pagamento'];
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    exit("Acesso inválido.");
+}
 
-    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+// =============================
+// DADOS DO CLIENTE
+// =============================
+$nome = $_POST['nome'] ?? '';
+$telefone = $_POST['telefone'] ?? '';
+$carrinho = $_POST['carrinho_lista'] ?? '';
 
-        $nome = $_POST['nome'];
-        $telefone = $_POST['telefone'];
-        $rua = $_POST['rua'] ?? null;
-        $numero = $_POST['numero'] ?? null;
-        $bairro = $_POST['bairro'] ?? null;
-        $total = $_POST['total'];
-        $forma_pagamento = $_POST['form_pag'];
-        $obs_pagamento = $_POST['obs_pagamento'];
-        $tipo_entrega = $_POST['tipo_entrega'];
+$rua = $_POST['rua'] ?? '';
+$numero = $_POST['numero'] ?? '';
+$bairro = $_POST['bairro'] ?? '';
+$obs_entrega = $_POST['obs_entrega'] ?? '';
 
-        // 🔎 VERIFICA SE CLIENTE JÁ EXISTE PELO TELEFONE
-        $sqlBusca = "SELECT id_cliente FROM clientes WHERE telefone = ?";
-        $stmtBusca = mysqli_prepare($conexao, $sqlBusca);
-        mysqli_stmt_bind_param($stmtBusca, "s", $telefone);
-        mysqli_stmt_execute($stmtBusca);
-        $resultado = mysqli_stmt_get_result($stmtBusca);
+$forma_pagamento = $_POST['form_pag'] ?? '';
+$obs_pagamento = $_POST['obs_pagamento'] ?? '';
 
-        if ($row = mysqli_fetch_assoc($resultado)) {
-            // ✅ Cliente já existe
-            $id_cliente = $row['id_cliente'];
-        } else {
-            // 🆕 Cria novo cliente
-            $sql = "INSERT INTO clientes (nome, telefone) VALUES (?, ?)";
-            $stmt = mysqli_prepare($conexao, $sql);
-            mysqli_stmt_bind_param($stmt, "ss", $nome, $telefone);
-            mysqli_stmt_execute($stmt);
+$tipo_entrega = $_POST['tipo_entrega'] ?? 'retirada';
 
-            $id_cliente = mysqli_insert_id($conexao);
-        }
+// =============================
+// TOTAL
+// =============================
+$total = (float)($_POST['total'] ?? 0);
 
-        // 📍 ENDEREÇO (SE FOR ENTREGA)
-        if ($tipo_entrega === "entregar") {
+// Garante os R$ 6,00 somente para entrega
+if ($tipo_entrega === 'entregar') {
+    $total += 6.00;
+}
 
-            $sqlEndereco = "INSERT INTO enderecos_cliente 
-            (id_cliente, rua, numero, bairro) 
-            VALUES (?, ?, ?, ?)";
+// =============================
+// CLIENTE
+// =============================
+$sqlBusca = "SELECT Id_cliente FROM clientes WHERE telefone = ?";
 
-            $stmtEndereco = mysqli_prepare($conexao, $sqlEndereco);
-            mysqli_stmt_bind_param($stmtEndereco, "isss", 
-                $id_cliente, $rua, $numero, $bairro
-            );
+$stmtBusca = mysqli_prepare($conexao, $sqlBusca);
 
-            mysqli_stmt_execute($stmtEndereco);
+if (!$stmtBusca) {
+    exit("Erro ao preparar busca do cliente: " . mysqli_error($conexao));
+}
 
-            $id_endereco_cliente = mysqli_insert_id($conexao);
+mysqli_stmt_bind_param(
+    $stmtBusca,
+    "s",
+    $telefone
+);
 
-        } else {
-            // 🛍️ Retirada
-            $tipo_entrega = "retirada";
-            $id_endereco_cliente = null;
-        }
+mysqli_stmt_execute($stmtBusca);
 
-        // 🧾 INSERE VENDA
-        $sqlVenda = "INSERT INTO vendas 
-        (id_cliente, id_endereco_cliente, total, forma_pagamento, obs_pagamento, tipo_entrega) 
-        VALUES (?, ?, ?, ?, ?, ?)";
+$resultado = mysqli_stmt_get_result($stmtBusca);
 
-        $stmtVenda = mysqli_prepare($conexao, $sqlVenda);
+if ($row = mysqli_fetch_assoc($resultado)) {
 
-        mysqli_stmt_bind_param($stmtVenda, "iidsss",
-            $id_cliente,
-            $id_endereco_cliente,
-            $total,
-            $forma_pagamento,
-            $obs_pagamento,
-            $tipo_entrega
-        );
+    // Cliente já existe
+    $id_cliente = $row['Id_cliente'];
 
-        mysqli_stmt_execute($stmtVenda);
+} else {
+
+    // Cria novo cliente
+    $sql = "INSERT INTO clientes (nome, telefone) VALUES (?, ?)";
+
+    $stmt = mysqli_prepare($conexao, $sql);
+
+    if (!$stmt) {
+        exit("Erro ao preparar cadastro do cliente: " . mysqli_error($conexao));
     }
-?>
 
+    mysqli_stmt_bind_param(
+        $stmt,
+        "ss",
+        $nome,
+        $telefone
+    );
+
+    if (!mysqli_stmt_execute($stmt)) {
+        exit("Erro ao cadastrar cliente: " . mysqli_stmt_error($stmt));
+    }
+
+    $id_cliente = mysqli_insert_id($conexao);
+}
+
+// =============================
+// ENDEREÇO
+// =============================
+if ($tipo_entrega === "entregar") {
+
+    $sqlEndereco = "
+        INSERT INTO enderecos_cliente
+        (Id_cliente, rua, numero, bairro)
+        VALUES (?, ?, ?, ?)
+    ";
+
+    $stmtEndereco = mysqli_prepare(
+        $conexao,
+        $sqlEndereco
+    );
+
+    if (!$stmtEndereco) {
+        exit("Erro ao preparar endereço: " . mysqli_error($conexao));
+    }
+
+    mysqli_stmt_bind_param(
+        $stmtEndereco,
+        "isss",
+        $id_cliente,
+        $rua,
+        $numero,
+        $bairro
+    );
+
+    if (!mysqli_stmt_execute($stmtEndereco)) {
+        exit("Erro ao cadastrar endereço: " . mysqli_stmt_error($stmtEndereco));
+    }
+
+    $id_endereco_cliente = mysqli_insert_id($conexao);
+
+} else {
+
+    // Retirada
+    $tipo_entrega = "retirada";
+    $id_endereco_cliente = null;
+}
+
+// =============================
+// INSERE VENDA
+// =============================
+$sqlVenda = "
+    INSERT INTO vendas
+    (
+        id_cliente,
+        id_endereco_cliente,
+        total,
+        forma_pagamento,
+        obs_pagamento,
+        tipo_entrega
+    )
+    VALUES (?, ?, ?, ?, ?, ?)
+";
+$stmtVenda = mysqli_prepare(
+    $conexao,
+    $sqlVenda
+);
+if (!$stmtVenda) {
+    exit("Erro ao preparar venda: " . mysqli_error($conexao));
+}
+mysqli_stmt_bind_param(
+    $stmtVenda,
+    "iidsss",
+    $id_cliente,
+    $id_endereco_cliente,
+    $total,
+    $forma_pagamento,
+    $obs_pagamento,
+    $tipo_entrega
+);
+if (!mysqli_stmt_execute($stmtVenda)) {
+    exit("Erro ao cadastrar venda: " . mysqli_stmt_error($stmtVenda));
+}
+// =============================
+// PEGA O ID DA VENDA
+// =============================
+$id_venda = mysqli_insert_id($conexao);
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Comanda - Pedido <?php echo htmlspecialchars($id_venda); ?></title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div id="comanda">
-        <table style="height: auto; margin: 20px; margin-top: 0;">
+
+<div id="comanda">
+
+    <table style="height: auto; margin: 20px; margin-top: 0;">
+
+        <!-- =============================
+             ID DA VENDA
+        ============================== -->
+        <tr>
+            <td>
+                <strong>Pedido Nº:</strong>
+            </td>
+
+            <td>
+                <?php echo htmlspecialchars($id_venda); ?>
+            </td>
+        </tr>
+
+        <!-- =============================
+             CLIENTE
+        ============================== -->
+        <tr>
+            <td>
+                <strong>Nome:</strong>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <?php echo htmlspecialchars($nome); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Telefone:</strong>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <?php echo htmlspecialchars($telefone); ?>
+            </td>
+        </tr>
+
+        <!-- =============================
+             TIPO DE PEDIDO
+        ============================== -->
+        <tr>
+            <td>
+                <strong>Tipo:</strong>
+            </td>
+
+            <td>
+                <?php
+                echo ($tipo_entrega === 'entregar')
+                    ? 'Entrega'
+                    : 'Retirada';
+                ?>
+            </td>
+        </tr>
+
+        <!-- =============================
+             PEDIDO
+        ============================== -->
+        <tr>
+            <td colspan="2">
+                <strong>Pedido:</strong>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+                <?php echo $carrinho; ?>
+            </td>
+            
+        </tr>
+        <tr>
+            <td colspan="2">
+                <strong>Observação de do pedido:</strong>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="border: 7px solid;">
+                <?php echo htmlspecialchars($obs_pagamento); ?>
+            </td>
+        </tr>
+
+        <!-- =============================
+             ENDEREÇO
+        ============================== -->
+
+        <?php if ($tipo_entrega === 'entregar'): ?>
+
             <tr>
-                <td><strong>Nome:</strong></td>
-                <td><?php echo $nome; ?></td>
-            </tr>
-            <tr>
-                <td><strong>Telefone:</strong></td>
-                <td><?php echo $telefone; ?></td>
-            </tr>
-            <tr>
-                <td><strong>Pedido:</strong></td>
+                <td>
+                    <strong>Rua:</strong>
+                </td>
+
                 
             </tr>
             <tr>
-                <td><?php echo $carrinho; ?></td>
+                <td colspan="2">
+                    <?php echo htmlspecialchars($rua); ?>
+                </td>
             </tr>
             <tr>
-                <td><strong>rua:</strong></td>
-                <td><?php echo $rua; ?></td>
-            </tr>
-            <tr>
-                <td><strong>número:</strong></td>
-                <td><?php echo $numero; ?></td>
-            </tr>
-            <tr>
-                <td><strong>bairro:</strong></td>
-                <td><?php echo $bairro; ?></td>
-            </tr>
-            <tr>
-                <td><strong>Observação de Entrega:</strong></td>
-                <td><?php echo $obs_entrega; ?></td>
-            </tr>
-            <tr>
-                <td><strong>Total:</strong></td>
-                <td><?php echo $total; ?></td>
-            </tr>
-            <tr>
-                <td><strong>Forma de Pagamento:</strong></td>
-                <td><?php echo $forma_pagamento; ?></td>
-            </tr>
-            <tr>
-                <td><strong>Observação de Pagamento:</strong></td>
-                <td><?php echo $obs_pagamento; ?></td>
-            </tr>
-        </table>
-    </div>
-    <script>
-        // Chama a função ao carregar a página
-        window.onload = function() {
-            window.print();
-        };
-    </script>
-    <style>
-        @media print {
+                <td>
+                    <strong>Número:</strong>
+                </td>
 
-            /* remove tudo */
-            body * {
-                visibility: hidden;
-            }
+                <td>
+                    <?php echo htmlspecialchars($numero); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Bairro:</strong>
+                </td>
 
-            /* mostra só a área que você quer */
-            #comanda, #comanda * {
-                visibility: visible;
-            }
+                
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <?php echo htmlspecialchars($bairro); ?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <strong>Observação de Entrega:</strong>
+                </td>
+            </tr>
 
-            /* cola no topo da página */
-            #comanda {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-            }
+            <tr>
+                <td colspan="2">
+                    <?php echo htmlspecialchars($obs_entrega); ?>
+                </td>
+            </tr>
 
-            /* remove margens da página */
-            @page {
-                margin: 0;
-            }
+        <?php endif; ?>
 
-            body {
-                margin: 0;
-                padding: 0;
-            }
-        }
-    </style>
+        <!-- =============================
+             TAXA DE ENTREGA
+        ============================== -->
+        <tr>
+            <td>
+                <strong>Taxa de entrega:</strong>
+            </td>
+
+            <td>
+                <?php
+                echo ($tipo_entrega === 'entregar')
+                    ? 'R$ 6,00'
+                    : 'R$ 0,00';
+                ?>
+            </td>
+        </tr>
+
+        <!-- =============================
+             TOTAL
+        ============================== -->
+        <tr>
+            <td>
+                <strong>Total:</strong>
+            </td>
+
+            <td>
+                R$
+                <?php echo number_format($total, 2, ',', '.'); ?>
+            </td>
+        </tr>
+
+        <!-- =============================
+             PAGAMENTO
+        ============================== -->
+        <tr>
+            <td>
+                <strong>Forma de Pagamento:</strong>
+            </td>
+
+            <td>
+                <?php echo htmlspecialchars($forma_pagamento); ?>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+<script>
+
+window.onload = function() {
+    window.print();
+};
+
+</script>
+
+<style>
+
+@media print {
+
+    body * {
+        visibility: hidden;
+    }
+
+    #comanda,
+    #comanda * {
+        visibility: visible;
+    }
+
+    #comanda {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    @page {
+        margin: 0;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+}
+
+</style>
+
 </body>
+
 </html>
