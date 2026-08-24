@@ -1,5 +1,47 @@
 <?php
-    require 'conexao.php';?>
+
+    require 'conexao.php';
+
+    $periodo = $_GET['periodo'] ?? 'hoje';
+    switch ($periodo) {
+        case 'ontem':
+            $sql_total = "
+                SELECT SUM(total) AS total_periodo
+                FROM vendas
+                WHERE DATE(data) = CURDATE() - INTERVAL 1 DAY
+            ";
+            break;
+        case 'semana':
+            $sql_total = "
+                SELECT SUM(total) AS total_periodo
+                FROM vendas
+                WHERE YEARWEEK(data, 1) = YEARWEEK(CURDATE(), 1)
+            ";
+            break;
+        case 'mes':
+            $sql_total = "
+                SELECT SUM(total) AS total_periodo
+                FROM vendas
+                WHERE YEAR(data) = YEAR(CURDATE())
+                AND MONTH(data) = MONTH(CURDATE())
+            ";
+            break;
+        case 'hoje':
+        default:
+            $sql_total = "
+                SELECT SUM(total) AS total_periodo
+                FROM vendas
+                WHERE DATE(data) = CURDATE()
+            ";
+            break;
+    }
+    $resultado_total = mysqli_query($conexao, $sql_total);
+    if (!$resultado_total) {
+        die("Erro ao calcular total: " . mysqli_error($conexao));
+    }
+    $dados_total = mysqli_fetch_assoc($resultado_total);
+    $total_periodo = $dados_total['total_periodo'] ?? 0;
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -12,7 +54,7 @@
     <div style="display: flex;">
         <div style="display: flex;">
             <!-- ==========================
-                 MENU
+                MENU
             =========================== -->
             <div id="menu">
                 <div id="inicio" align="center">
@@ -47,11 +89,11 @@
                 </button>
             </div>
             <!-- ==========================
-                 CONTEÚDO
+                CONTEÚDO
             =========================== -->
             <div style="display: grid;">
                 <!-- ==========================
-                     ÁREA DE PESQUISA
+                    ÁREA DE PESQUISA
                 =========================== -->
                 <div class="area_filtros" style=" border: 1px solid; width: 98vw; height: 20vh; " >
                     <div style=" display: flex; height: 100%; margin-top: 20px; " >
@@ -63,23 +105,34 @@
                             </button>
                         </div>
                         <!-- BOTÕES -->
-                        <div id="botoes" align="center" style="width: 50%;" >
-                            <div id="botoes_status">
-                                <input type="button" value="concluido" id="concluido" >
-                                <input type="button" value="cancelado" id="cancelado" >
-                            </div>
-                            <br>
+                        <div id="botoes" align="center" style="width: 30%; margin-top: 2%;" >
                             <div id="botoes_data">
-                                <input type="button" value="ontem" id="ontem" >
-                                <input type="button" value="hoje" id="hoje">
-                                <input type="button" value="semana" id="semana" >
-                                <input type="button" value="mes" id="mes" >
+                                <input type="button" value="Ontem" id="ontem" onclick="alterarPeriodo('ontem')">
+                                <input type="button" value="Hoje" id="hoje" onclick="alterarPeriodo('hoje')">
+                            </div>
+                        </div>
+                        <?php
+                            $sql_total = "
+                                SELECT SUM(total) AS total_dia
+                                FROM vendas
+                                WHERE DATE(data) = CURDATE() and status = 'entregue'
+                            ";
+                            $resultado_total = mysqli_query($conexao, $sql_total);
+                            $dados_total = mysqli_fetch_assoc($resultado_total);
+                            $total_dia = $dados_total['total_dia'] ?? 0;
+                        ?>
+                        <div style="width: 27%">
+                            <div style="display: grid; height: 100%; width: 100%; " align="center">
+                                <label style="margin-top: 10px; margin-bottom: -100px; font-size: 30px; height: 30px;">Total:</label>
+                                <div style="font-size: 25px;" id="Total_dia">
+                                    R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- ==========================
-                     TABELA
+                    TABELA
                 =========================== -->
                 <div style=" border: 1px solid; width: 98vw; height: 80vh; " >
                     <div id="area_tabela">

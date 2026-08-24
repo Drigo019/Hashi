@@ -1,3 +1,12 @@
+
+/*=================
+    BOTÕES DE PERIODO 
+=================*/
+function alterarPeriodo(periodo) {
+
+    window.location.href = "ver_pedidos.php?periodo=" + periodo;
+
+}
 function alternarDiv() {
     var menu = document.getElementById("menu");
     var imagem = document.getElementById("ico_menu");
@@ -210,58 +219,61 @@ document.addEventListener("DOMContentLoaded", function () {
 const telefone = document.getElementById("telefone");
 const listaClientes = document.getElementById("lista_clientes");
 
-telefone.addEventListener("input", function () {
+if (telefone && listaClientes) {
 
-    const numero = this.value.trim();
+    telefone.addEventListener("input", function () {
 
-    // Se tiver poucos números, não pesquisa
-    if (numero.length < 3) {
-        listaClientes.innerHTML = "";
-        return;
-    }
+        const numero = this.value.trim();
 
-    fetch("buscar_clientes.php?telefone=" + encodeURIComponent(numero))
-        .then(response => response.json())
-        .then(clientes => {
-
+        if (numero.length < 3) {
             listaClientes.innerHTML = "";
+            return;
+        }
 
-            if (clientes.length === 0) {
-                listaClientes.innerHTML =
-                    '<div class="cliente_nao_encontrado">Nenhum cliente encontrado</div>';
-                return;
-            }
+        fetch("buscar_clientes.php?telefone=" + encodeURIComponent(numero))
+            .then(response => response.json())
+            .then(clientes => {
 
-            clientes.forEach(cliente => {
+                listaClientes.innerHTML = "";
 
-                const div = document.createElement("div");
+                if (clientes.length === 0) {
 
-                div.classList.add("opcao_cliente");
+                    listaClientes.innerHTML =
+                        '<div class="cliente_nao_encontrado">Nenhum cliente encontrado</div>';
 
-                div.innerHTML = `
-                    <strong>${cliente.nome}</strong>
-                    <span>${cliente.telefone}</span>
-                `;
+                    return;
+                }
 
-                div.addEventListener("click", function () {
+                clientes.forEach(cliente => {
 
-                    telefone.value = cliente.telefone;
+                    const div = document.createElement("div");
 
-                    // Se você tiver um campo para o nome:
-                    const campoNome = document.getElementById("nome");
+                    div.classList.add("opcao_cliente");
 
-                    if (campoNome) {
-                        campoNome.value = cliente.nome;
-                    }
+                    div.innerHTML = `
+                        <strong>${cliente.nome}</strong>
+                        <span>${cliente.telefone}</span>
+                    `;
 
-                    // Esconde a lista
-                    listaClientes.innerHTML = "";
+                    div.addEventListener("click", function () {
+
+                        telefone.value = cliente.telefone;
+
+                        const campoNome = document.getElementById("nome");
+
+                        if (campoNome) {
+                            campoNome.value = cliente.nome;
+                        }
+
+                        listaClientes.innerHTML = "";
+                    });
+
+                    listaClientes.appendChild(div);
                 });
 
-                listaClientes.appendChild(div);
+            })
+            .catch(error => {
+                console.error("Erro ao buscar clientes:", error);
             });
-        })
-        .catch(error => {
-            console.error("Erro ao buscar clientes:", error);
-        });
-}); 
+    });
+}
