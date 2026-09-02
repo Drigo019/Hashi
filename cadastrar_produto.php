@@ -1,24 +1,25 @@
 <?php
+include("conexao.php");
 
-include 'conexao.php';
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-// Recebe os dados do formulário
-$nome = $_POST['nome'];
-$valor = $_POST['valor'];
-$categoria = $_POST['categoria'];
-$descricao = $_POST['descricao'];
-$fornecedor = $_POST['fornecedor'];
+    // Recebe os dados do formulário
+    $nome = $_POST['nome'];
+    $valor = $_POST['valor'];
+    $categoria = $_POST['categoria'];
+    $descricao = $_POST['descricao'];}
 
-        // Cadastra o produto
-        $sql = "INSERT INTO produtos
-        (nome, categoria, valor, descricao, id_fornecedor )
-        VALUES
-        ('$nome', '$valor', '$categoria', '$descricao', '$fornecedor')";
+    $sql = "INSERT INTO produtos (nome, valor, categoria, descricao) 
+            VALUES (?, ?, ?, ?)";
 
-        if ($conn->query($sql)) {
-            echo "Produto cadastrado com sucesso!";
-        } else {
-            echo "Erro ao cadastrar produto: " . $conn->error;
-        }
+    $stmt = mysqli_prepare($conexao, $sql);
+    mysqli_stmt_bind_param($stmt, "ssdssi", $nome, $valor, $categoria, $descricao);
 
-?>
+    $result = mysqli_stmt_execute($stmt);
+
+    if ($result) {
+        echo "<script>alert('Pedido cadastrado com sucesso!');</script>";
+        echo "<script>window.location.href='inicio.html';</script>";
+    } else {
+        echo "<script>alert('Erro ao cadastrar pedido');</script>";
+    }
