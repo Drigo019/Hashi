@@ -27,7 +27,19 @@
                         <img class="icons_menu" src="icons/pedido.png">
                         <div style="font-size: 18px;">Ver Pedidos</div>
                     </button>
-                </div>                
+                </div>  
+                <div id="" align="center">
+                    <button class="btn" onclick="window.location.href='cadastrar_produto.html'">
+                        <img class="" src="icons/">
+                        <div style="font-size: 18px;">Cadastrar Prato</div>
+                    </button>
+                </div>
+                <div id="" align="center">
+                    <button class="btn" onclick="window.location.href=''">
+                        <img class="icons_menu" src="icons/">
+                        <div style="font-size: 18px;">Cadastrar Bairro</div>
+                    </button>
+                </div>              
             </div>
             <div>
                 <button id="btn_menu" onclick="alternarDiv()">
