@@ -427,25 +427,17 @@ div[style*="border: 1px solid"] {
     width: 250px;
     max-height: 200px;
     overflow-y: auto;
-
     background-color: white;
-
     border: 1px solid #999;
-
     position: absolute;
-
     z-index: 9999;
-
     text-align: left;
 }
 
 .opcao_cliente {
     padding: 10px;
-
     border-bottom: 1px solid #ddd;
-
     cursor: pointer;
-
     background-color: white;
 }
 
@@ -460,4 +452,34 @@ div[style*="border: 1px solid"] {
 .opcao_cliente span {
     font-size: 18px;
     color: #666;
+}
+
+/*=================
+    TABELAS DE CADASTRO
+=================*/
+.table_cadastro {
+    border: 2px solid #000;
+    width: 50%;
+}
+.table_cadastro th {
+    margin-bottom: 10px;
+}
+.table_cadastro td{
+    font-size: 20px;
+    font-weight: bold;    
+}
+.table_cadastro input[type="text"],
+.table_cadastro input[type="number"] {
+    width: 98%;
+    padding: 5px;
+    font-size: 18px;
+    border: 1px solid #4d4d4d;
+    border-radius: 4px;
+}
+.table_cadastro select{
+    width: 100%;
+    padding: 5px;
+    font-size: 18px;
+    border: 1px solid #4d4d4d;
+    border-radius: 4px;
 }

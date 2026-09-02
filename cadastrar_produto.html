@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="widtd=device-widtd, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Importa a biblioteca Chart.js via CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="body">
     <div style="display: flex;">
@@ -51,27 +49,56 @@
         </div>
 
         <div style="height: 100%; width: 100%;">
-            <div>
-                <table border="1">
+            <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+                <table class="table_cadastro">
                     <tr>
                         <td>Nome:</td>
-                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" name="nome" required></td>
                     </tr>
                     <tr>
                         <td>Valor:</td>
-                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" name="valor" step="0.01" required></td>
                     </tr>
                     <tr>
                         <td>Categoria:</td>
-                        <td></td>
+                        
                     </tr>
                     <tr>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            <select name="categoria" required>
+                                <option value="">Selecione uma categoria</option>
+                                <option value="pratos quente">Prato quente</option>
+                                <option value="entradas">Entrada</option>
+                                <option value="pokes">Poke</option>
+                                <option value="temakis">Temaki</option>
+                                <option value="hot rolls">Hot roll</option>
+                                <option value="hossomaki">Hossomaki</option>
+                                <option value="uramaki">Uramaki</option>
+                                <option value="especiais">Especial</option>
+                                <option value="combinados">Combinado</option>
+                                <option value="sobremesa">Sobremesa</option>
+                                <option value="refrigerantes">Refrigerante</option>
+                                <option value="cervejas">Cerveja</option>
+                                <option value="aguas">Água</option>
+                                <option value="sucos">Suco</option>
+                            </select>
+                        </td>
                     </tr>
                     <tr>
-                        <td></td>
-                        <td></td>
+                        <td>Fornecedor:</td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" name="fornecedor" required></td>
+                    </tr>
+                    <tr>
+                        <td>Descrição:</td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" name="descricao"></td>
                     </tr>
                 </table>
             </div>
