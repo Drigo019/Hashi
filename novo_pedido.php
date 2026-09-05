@@ -1,3 +1,57 @@
+<?php
+    session_start();
+
+    // CONEXÃO COM O BANCO
+    $conn = new mysqli("localhost", "root", "", "hashi");
+
+    if ($conn->connect_error) {
+        die("Erro na conexão com o banco: " . $conn->connect_error);
+    }
+
+    $conn->set_charset("utf8mb4");
+
+    // PEGAR CATEGORIA DA URL
+    $categoria = $_GET['categoria'] ?? '';
+
+    // BUSCAR PRODUTOS DO BANCO
+    if ($categoria !== '') {
+
+        // Busca somente os produtos da categoria selecionada
+        $sql = "SELECT id_produto, nome, valor, categoria
+                FROM produtos
+                WHERE categoria = ?
+                ORDER BY nome ASC";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Erro ao preparar consulta: " . $conn->error);
+        }
+        $stmt->bind_param("s", $categoria);
+        if (!$stmt->execute()) {
+            die("Erro ao executar consulta: " . $stmt->error);
+        }
+        $resultado = $stmt->get_result();
+    } else {
+        // Se nenhuma categoria foi selecionada,
+        // mostra todos os produtos
+        $sql = "SELECT id_produto, nome, valor, categoria
+                FROM produtos
+                ORDER BY nome ASC";
+        $resultado = $conn->query($sql);
+        if (!$resultado) {
+            die("Erro na consulta: " . $conn->error);
+        }
+    }
+    // MONTAR ARRAY DE PRODUTOS
+    $itens = [];
+    while ($produto = $resultado->fetch_assoc()) {
+
+        $itens[$produto['id_produto']] = [
+            'nome' => $produto['nome'],
+            'valor' => $produto['valor'],
+            'categoria' => $produto['categoria']
+        ];
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,152 +102,125 @@
             </div>
         </div>
         
-        <div style="display: flex; width: 100%; height: 100vh;">
+        <div style="display: flex; width: 40%; height: 100vh;">
             <div class="div_nov_ped" align="center" style="overflow-y: auto; height: 100vh;">
                 <form action="imprimir_comanda.php" method="POST" onsubmit="prepararEnvio()">
-                <div class="categoria_pratos" style="display: grid;"> 
-                    <h2> PRATOS QUENTES </h2>
-                    <button type="button" onclick="adicionarAoCarrinho('Bentô box teppan de salmão', 55.00)">Bentô box teppan de salmão</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Bentô box de tilápia', 35.00)">Bentô box de tilápia</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Bentô box de Yakisoba', 35.00)">Bentô box de Yakisoba</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Bentô box de Shimeji', 35.00)">Bentô box de Shimeji</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Bentô box de frango xadrez', 35.00)">Bentô box de frango xadrez</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Bentô box de frango com laranja', 35.00)">Bentô box de frango com laranja</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Lombo agridoce', 33.00)">Lombo agridoce</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Frango com laranja', 33.00)">Frango com laranja</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Peixe frito', 45.00)">Peixe frito</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Frango xadrez', 33.00)">Frango xadrez</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Yakisoba vegetariano', 22.00)">Yakisoba vegetariano</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Yakisoba tradiconal', 25.00)">Yakisoba tradiconal</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Yakisoba de Camarão',37.00)">Yakisoba de Camarão</button>
-                </div>
-                <div class="categoria_pratos" style="display: grid">
-                    <h2> ENTRADAS</h2>
-                    <button type="button" onclick="adicionarAoCarrinho('Ceviche de tilápia', 40.00)">Ceviche de tilápia</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Ceviche de salmão', 65.00)">Ceviche de salmão</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Shimeji na manteiga', 35.00)">Shimeji na manteiga</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Guioza', 18.00)">Guioza</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Harumaki tradicional', 14.00)">Harumaki tradicional</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Harumaki 2 queijo', 14.00)">Harumaki 2 queijo</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Hariumaki vegetariano', 14.00)">Harumaki vegetarino</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Harumaki de camrão', 16.00)">Harumaki de camrão</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Sonomono', 8.00)">Sonomono</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Oniguiri', 10.00)">Oniguiri</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Tartare', 30.00)">Tartare</button>
-                </div>
-                <div class="categoria_pratos" style="display: grid">
-                    <h2> POKES </h2>
-                    <button type="button" onclick="adicionarAoCarrinho('Poke só salmão', 38.00)">Poke só salmão</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Poke de salmão filadelfia',38.00)">Poke de salmão filadelfia</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Poke de shimeji', 38.00)">Poke de shimeji</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Poke de tilápia', 38.00)">Poke de tilápia</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Poke de camarão', 38.00)">Poke de camarão</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Poke de frango', 38.00)">Poke de frango</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Acrécimo de Proteina', 12.00)">Acrécimo de Proteina</button>
-                </div>
-                <div class="categoria_pratos" style="display: grid;">
-                    <h2> TEMAKIS </h2>
-                    <button type="button" onclick="adicionarAoCarrinho('Temaki Filadelfia', 32.00)">Temaki Filadelfia</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Temaki de camarão crisp', 33.00)">Temaki de camarão crisp</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Temaki de Salmão crisp', 33.00)">Temaki de Salmão crisp</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Temaki só salmão', 33.00)">Temaki só salmão</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Temaki de shimeji', 30.00)">Temaki de shimeji</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Temaki hot', 35.00)">Temaki hot</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Fritar Temaki', 5.00)">Fritar Temaki</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Temaki sem arroz', 8.00)">Temaki sem arroz</button>
-                </div>
-                <div class="categoria_pratos" style="display: grid;">
-                    <h2> HOT ROLL</h2>
-                    <button type="button" onclick="adicionarAoCarrinho('Mini hot', 18.00)">Mini hot</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Hot roll', 20.00)">Hot roll</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Ebi hot', 22.00)">Ebi hot</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Promo hot', 50.00)">Promo Hot</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Super hot', 50.00)">Super hot</button>
-                </div> 
-                <div class="categoria_pratos" style="display: grid;">
-                    <h2> HOSSOMAKIS </h2>
-                    <button type="button" onclick="adicionarAoCarrinho('Hossomaki de kani', 14.00)">Hossomaki de kani</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Hossomaki de salmão', 16.00)">Hossomaki de salmão</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Hossomaki de pepino', 14.00)">Hossomaki de pepino</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Hossomaki de salmão grelhado', 18.00)">Hossomaki de sakmão grelhado</button>
-                </div>
-                <div class="categoria_pratos" style="display: grid;">
-                    <h2> URAMAKIS </h2>
-                    <button type="button" onclick="adicionarAoCarrinho('Uramaki de salmão filadelfia', 16.00)">Uramaki de salmão filadelfia</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Uramaki de kani', 18.00)">Uramaki de kani</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Uramaki de camarão', 18.00)">Uramaki de kani</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Uramaki de salmão grelhado', 18.00)">Uramaki de salmão grelhado</button>
-                </div>
-                <div class="categoria_pratos" style="display: grid;">
-                    <h2> ESPECIAIS </h2>
-                    <button type="button" onclick="adicionarAoCarrinho('Sashimi de salmão', 25.00)">Sashimi de salmão</button> 
-                    <button type="button" onclick="adicionarAoCarrinho('Sashimi de tilápia', 20.00)">Sashimi de tilápia</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Jyo de salmão', 20.00)">Jyo de salmão</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Jyo maçaricado', 25.00)">Jyo Maçaricado</button>
-                    <button type="button" onclick="adicionarAoCarrinho('ebi jyo', 25.00)">Ebi jyo</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Dragon', 23.00)">Dragon</button>
-                </div>
-                <div class="categoria_pratos" style="display: grid;">
-                    <h2> COMBINADOS </h2>
-                    <button type="button" onclick="adicionarAoCarrinho('Combinado 1', 55.00)">Combinado 1</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Combinado 2', 65.00)">Combinado 2</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Combinado 3', 80.00)">Combinado 3</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Combinado 4', 105.00)">Combinado 4</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Combinado 5', 130.00)">Combinado 5</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Combinado 6', 120.00)">Combinado 6</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Rodízio delivery', 110.00)">Rodízio delivery</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Rodízio casl', 150.00)">Rodízio casal</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Rodana rodízio', 35.00)">Rodana Rodízio</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Hiroshima', 100.00)">Hiroshima</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Combinado de 40 peças (especial)', 65.00)">Combiando 40 peças (especial)</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Acrécimo de hot roll', 10.00)">Acrécimo de hot roll</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Fritar o temaki do combiando', 5.00)">Fritar o temaki do combinado</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Combinado todo salmão', 10.00)">Combinado todo salmão</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Combiando sem nada cru', 10.00)">Combinado sem nada cru</button>
-                </div>
-                <div class="categoria_pratos" style="display: grid;">
-                    <h2>SOBREMESAS:</h2>
-                    <button type="button" onclick="adicionarAoCarrinho('Haruaki de banana com chocolate', 14.00)">Harumaki de Banana com Chocolate</button>
-                    <button type="button" onclick="adicionarAoCarrinho('Hot roll de banana com chocolate', 14.00)">Hot roll de banana com chocolate</button>                </div>
-                <div class="categoria_pratos" style="display: grid;">
-                    <h2> BEBIDAS: </h2>
-                    <div class="categoria_pratos" style="display: grid; margin-left: 8px;">
-                        <h3> REFRIGERANTES </h3>
-                        <button type="button" onclick="adicionarAoCarrinho('Coca lata normal', 6.00)">Coca lata normal</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Coca lata zero', 6.00)">Coca lata zero</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Coca 600ml normal', 8.00)">Coca 600ml normal</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Coca 60ml zero', 8.00)">Coca 600ml zero</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Coca 1,5L normal', 15.00)">Coca 1,5L normal</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Coca 1,5L zero', 15.00)">Coca 1,5L zero</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Guaraná lata normal', 6.00)">Guaraná lata normal</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Guaraná lata zero', 6.00)">Guaraná lata zero</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Guaraná 1L', 7.00)">Guaraná 1L</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Tonica lata normal', 6.00)">Tonica Lata normal</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Tonica lata zero', 6.00)">Tonica lata zero</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Fanta lata uva', 6.00)">Fanta lata uva</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Fanta lata laranja', 6.00)">Fanta lata Laranja</button>
-                        <button type="button" onclick="adicionarAoCarrinho('H2O limão', 7.00)">H2O limão</button>
-                        <button type="button" onclick="adicionarAoCarrinho('H2O limoneto', 7.00)">H2O limoneto</button>
+                <!-- =================================================
+                    LISTA DE PRODUTOS
+                ================================================== -->
+                <div style="width: 100%; border: 1px solid"id="div_categorias">
+                    <div style="display: flex;" align="center" > 
+                        <div>
+                            <button type="button" >
+                                Pratos quentes
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button">
+                                Entradas
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button">
+                                Poke
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button">
+                                Temaki
+                            </button>
+                        </div>
+                        
+                        
                     </div>
-                    <div  class="categoria_pratos" style="display: grid; margin-left: 8px;">
-                        <h2> CERVEJAS </h2>
-                        <button type="button" onclick="adicionarAoCarrinho('Brahma lata', 6.00)">Brahma lata</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Amistel lata', 6.00)">Amistel lata</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Antartica lata', 6.00)">Antartica lata</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Skol', 6.00)">Skol</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Heniken', 9.00)">Heniken</button>
+                    <div style="display: flex;" align="center">
+                        <div>
+                            <button type="button">
+                                Hot roll
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button">
+                                Especial
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button">
+                                Combinado
+                            </button>
+                        </div>
+                        
+                        <div>
+                            <button type="button">
+                                Hossomaki
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button">
+                                Uramaki
+                            </button>
+                        </div>
                     </div>
-                    <div class="categoria_pratos" style="display: grid; margin-left: 8px;">
-                        <h2> AGUÁ </h2>
-                        <button type="button" onclick="adicionarAoCarrinho('Aguá sem gás', 3.00)">Aguá se gás</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Aguá sem gás', 4.00)">Aguá sem gás</button>
+                    <div style="display: flex;">
+                        <div>
+                            <button type="button">
+                                Sobremesa
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button">
+                                Refrigerante
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button">
+                                Cerveja
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button">
+                                Água
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button">
+                                Suco
+                            </button>
+                        </div>
                     </div>
-                    <div class="categoria_pratos" style="display: grid; margin-left: 8px;">
-                        <h2> SUCOS </h2>
-                        <button type="button" onclick="adicionarAoCarrinho('Suco de uva Delvale lata', 7.00)">Suco de uva Delvale lata</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Suco de uva 1,3L', 20.00)"> Suco de uva 1,3L</button>
-                        <button type="button" onclick="adicionarAoCarrinho('Suco de laranja 1,3L', 20.00)"> Suco de laranja 1,3L</button>
+                </div>
+                <br>
+                    <div class="carrinho_container">
+                        <?php if (!empty($itens)) { ?>
+                            <?php foreach ($itens as $key => $value) { ?>
+                                <div class="produto">
+                                    <!-- NOME -->
+                                    <strong>
+                                        <?php echo htmlspecialchars($value['nome']); ?>
+                                    </strong>
+                                    <br>
+                                    <!-- PREÇO -->
+                                    R$
+                                    <?php echo number_format($value['valor'],2,',','.');?>
+                                    <br>
+                                    <!-- ADICIONAR -->
+                                    <button type="button" id="btn_adicionar" onclick="adicionarAoCarrinho('<?php echo addslashes($value['nome']); ?>', '<?php echo $value['valor']; ?>')">
+                                        Adicionar
+                                    </button>
+                                </div>
+                            <?php } ?>
+                        <?php } else { ?>
+                            <!-- =================================================
+                                NENHUM PRODUTO
+                            ================================================== -->
+                            <div align="center" style=" width: 100%; padding: 30px; color: #ffffff;" >
+                                <h2>
+                                    Nenhum produto encontrado nesta categoria.
+                                </h2>
+                            </div>
+                        <?php } ?>
                     </div>
+                </div>
                 </div>
             </div>
             <div class="div_nov_ped" align='center' style="overflow-y: auto; height: 100vh;">

@@ -103,34 +103,11 @@ body {
 /* ==========================
    NOVO PEDIDO
 ========================== */
-
-.div_nov_ped {
-    border: 1px solid;
-    width: 34%;
-    border-left: none;
-    border-top: none;
-    border-bottom: none;
-}
-
-
-.td_pedido {
-    font-size: 20px;
-    border: 1px solid;
-}
-
-
-.tabela {
-    background-color: #bbbbbb96;
-}
-
-
-.select {
+#btn_adicionar {
     width: 100%;
-    text-align: center;
-    font-size: 19px;
+    height: 30px;
+    cursor: pointer;
 }
-
-
 #div_dados {
     height: 25vh;
     border: 1px solid;
@@ -138,16 +115,12 @@ body {
     align-items: center;
     text-align: center;
 }
-
-
 #div_entrega {
     width: 100%;
     height: 40vh;
     border: 1px solid;
     text-align: center;
 }
-
-
 #div_form_pag {
     height: 40vh;
     border: 1px solid;
@@ -155,27 +128,43 @@ body {
     align-items: center;
     text-align: center;
 }
-
-
+#div_categorias button{
+    width: auto;
+    margin: 2px;
+    font-size: 15px;
+}
+.div_nov_ped {
+    border: 1px solid;
+    width: 70%;
+    border-left: none;
+    border-top: none;
+    border-bottom: none;
+}
+.td_pedido {
+    font-size: 20px;
+    border: 1px solid;
+}
+.tabela {
+    background-color: #bbbbbb96;
+}
+.select {
+    width: 100%;
+    text-align: center;
+    font-size: 19px;
+}
 .carrinho_vazio {
     font-size: 30px;
 }
-
-
 .categoria_pratos {
     width: 95%;
     height: auto;
     border: 1px solid;
 }
-
-
 .categoria_pratos button {
     text-align: center;
     font-size: 20px;
     height: 30px;
 }
-
-
 .btn_prato {
     width: 20vw;
     height: 20px;
@@ -184,6 +173,16 @@ body {
     font-size: 16px;
     cursor: pointer;
     margin-top: 5px;
+}
+.produto{
+    border: 2px solid;
+    margin: 10px;
+}
+.carrinho_container {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: auto;
 }
 
 

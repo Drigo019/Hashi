@@ -13,13 +13,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             VALUES (?, ?, ?, ?)";
 
     $stmt = mysqli_prepare($conexao, $sql);
-    mysqli_stmt_bind_param($stmt, "ssdssi", $nome, $valor, $categoria, $descricao);
+    mysqli_stmt_bind_param($stmt, "siss", $nome, $valor, $categoria, $descricao);
 
     $result = mysqli_stmt_execute($stmt);
 
     if ($result) {
-        echo "<script>alert('Pedido cadastrado com sucesso!');</script>";
-        echo "<script>window.location.href='inicio.html';</script>";
+        echo "<script>alert('Prato cadastrado com sucesso!');</script>";
+        echo "<script>window.location.href='cadastrar_produto.html';</script>";
     } else {
-        echo "<script>alert('Erro ao cadastrar pedido');</script>";
+        echo "<script>alert('Erro ao cadastrar prato');</script>";
     }
