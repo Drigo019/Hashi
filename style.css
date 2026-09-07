@@ -131,11 +131,11 @@ body {
 #div_categorias button{
     width: auto;
     margin: 2px;
-    font-size: 15px;
+    font-size: 17px;
 }
 .div_nov_ped {
     border: 1px solid;
-    width: 70%;
+    width: 100%;
     border-left: none;
     border-top: none;
     border-bottom: none;

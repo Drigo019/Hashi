@@ -221,7 +221,6 @@
                         <?php } ?>
                     </div>
                 </div>
-                </div>
             </div>
             <div class="div_nov_ped" align='center' style="overflow-y: auto; height: 100vh;">
                 <div align="center">
@@ -422,7 +421,6 @@
         </div>
     </div>
 </form>
-    <script src="entrega.js"></script>
     <script src="script.js"></script>
     <script>
         let carrinho = [];
