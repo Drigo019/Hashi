@@ -1,106 +1,148 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Cadastrar Produto</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="body">
     <div style="display: flex;">
+        <!-- MENU -->
         <div style="display: flex;">
             <div id="menu">
-                <div id="inicio" align="center" >
-                    <button class="btn" onclick="window.location.href='inicio.html'">
+                <div id="inicio" align="center">
+                    <button type="button" class="btn"
+                        onclick="window.location.href='inicio.html'">
                         <img class="icons_menu" src="icons/casa.png">
-                        <div style="font-size: 18px;">Início</div>
+                        <div style="font-size: 18px;">
+                            Início
+                        </div>
                     </button>
                 </div>
                 <div id="novo_pedido" align="center">
-                    <button class="btn" onclick="window.location.href='novo_pedido.php'">
-                        <img class="icons_menu" src="icons/carrinho_adicionar.png">
-                        <div style="font-size: 18px;">Novo Pedido</div>
+                    <button type="button" class="btn"
+                        onclick="window.location.href='novo_pedido.php'">
+                        <img class="icons_menu"
+                            src="icons/carrinho_adicionar.png">
+                        <div style="font-size: 18px;">
+                            Novo Pedido
+                        </div>
                     </button>
                 </div>
-                <div id="" align="center">
-                    <button class="btn" onclick="window.location.href='ver_pedidos.php'">
+                <div align="center">
+                    <button type="button" class="btn"
+                        onclick="window.location.href='ver_pedidos.php'">
                         <img class="icons_menu" src="icons/pedido.png">
-                        <div style="font-size: 18px;">Ver Pedidos</div>
+                        <div style="font-size: 18px;">
+                            Ver Pedidos
+                        </div>
                     </button>
                 </div>
-                <div id="" align="center">
-                    <button class="btn" onclick="window.location.href='cadastrar_produto.html'">
-                        <img class="" src="icons/">
-                        <div style="font-size: 18px;">Cadastrar Prato</div>
+                <div align="center">
+                    <button type="button" class="btn" onclick="window.location.href='cadastrar_produto.html'">
+                        <img class="icons_menu" src="icons/prato.png">
+                        <div style="font-size: 18px;">
+                            Cadastrar Prato
+                        </div>
                     </button>
                 </div>
-                <div id="" align="center">
-                    <button class="btn" onclick="window.location.href=''">
+                <div align="center">
+                    <button type="button" class="btn" onclick="window.location.href=''">
                         <img class="icons_menu" src="icons/">
-                        <div style="font-size: 18px;">Cadastrar Bairro</div>
+                        <div style="font-size: 18px;">
+                            Cadastrar Fornecedor
+                        </div>
                     </button>
                 </div>
             </div>
+            <!-- BOTÃO DO MENU -->
             <div>
-                <button id="btn_menu" onclick="alternarDiv()">
+                <button type="button" id="btn_menu" onclick="alternarDiv()">
                     <img id="ico_menu" src="icons/seta_direita.png" align="right">
                 </button>
             </div>
         </div>
-
+        <!-- ÁREA PRINCIPAL -->
         <div style="height: 100%; width: 100%;">
+            <!-- FORMULÁRIO -->
             <form action="cadastrar_produto.php" method="POST">
-                <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+                <div style=" display: flex; justify-content: center; align-items: center; min-height: 100vh;">
                     <table class="table_cadastro">
+                        <!-- NOME -->
                         <tr>
-                            <td>Nome:</td>
+                            <td>
+                                Nome:
+                            </td>
                         </tr>
                         <tr>
-                            <td><input type="text" name="nome" required></td>
+                            <td>
+                                <input type="text" name="nome" required>
+                            </td>
+                        </tr>
+                        <!-- VALOR -->
+                        <tr>
+                            <td>
+                                Valor:
+                            </td>
                         </tr>
                         <tr>
-                            <td>Valor:</td>
+                            <td>
+                                <input type="number" name="valor" step="0.01" min="0" required>
+                            </td>
                         </tr>
+                        <!-- CATEGORIA -->
                         <tr>
-                            <td><input type="number" name="valor" step="0.01" required></td>
-                        </tr>
-                        <tr>
-                            <td>Categoria:</td>
+                            <td>
+                                Categoria:
+                            </td>
                         </tr>
                         <tr>
                             <td>
                                 <select name="categoria" required>
-                                    <option value="">Selecione uma categoria</option>
-                                    <option value="pratos quente">Prato quente</option>
-                                    <option value="entradas">Entrada</option>
-                                    <option value="pokes">Poke</option>
-                                    <option value="temakis">Temaki</option>
-                                    <option value="hot rolls">Hot roll</option>
-                                    <option value="hossomaki">Hossomaki</option>
-                                    <option value="uramaki">Uramaki</option>
-                                    <option value="especiais">Especial</option>
-                                    <option value="combinados">Combinado</option>
-                                    <option value="sobremesa">Sobremesa</option>
-                                    <option value="refrigerantes">Refrigerante</option>
-                                    <option value="cervejas">Cerveja</option>
-                                    <option value="aguas">Água</option>
-                                    <option value="sucos">Suco</option>
+                                    <option value=""> Selecione uma categoria </option>
+                                    <option value="prato quente"> Prato quente</option>
+                                    <option value="entrada"> Entrada </option>
+                                    <option value="poke"> Poke </option>
+                                    <option value="temaki"> Temaki </option>
+                                    <option value="hot roll"> Hot roll </option>
+                                    <option value="hossomaki"> Hossomaki </option>
+                                    <option value="uramaki"> Uramaki </option>
+                                    <option value="especial"> Especial </option>
+                                    <option value="combinado"> Combinado </option>
+                                    <option value="sobremesa"> Sobremesa </option>
+                                    <option value="refrigerante"> Refrigerante </option>
+                                    <option value="cerveja"> Cerveja </option>
+                                    <option value="agua"> Água </option>
+                                    <option value="suco"> Suco </option>
                                 </select>
                             </td>
                         </tr>
+                        <!-- DESCRIÇÃO -->
                         <tr>
-                            <td>Descrição:</td>
+                            <td>
+                                Descrição:
+                            </td>
                         </tr>
                         <tr>
-                            <td><input type="text" name="descricao"></td>
+                            <td>
+                                <input type="text" name="descricao">
+                            </td>
                         </tr>
+                        <!-- BOTÃO -->
                         <tr>
-                            <td align="center"><button type="submit">Cadastrar</button></td>
+                            <td align="center">
+                                <button type="submit">
+                                    Cadastrar
+                                </button>
+                            </td>
                         </tr>
                     </table>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
+    </div>
+    <!-- JAVASCRIPT -->
     <script src="script.js"></script>
 </body>
 </html>

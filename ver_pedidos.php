@@ -90,7 +90,7 @@
                 <div id="" align="center">
                     <button class="btn" onclick="window.location.href=''">
                         <img class="icons_menu" src="icons/">
-                        <div style="font-size: 18px;">Cadastrar Bairro</div>
+                        <div style="font-size: 18px;">Cadastrar Fornecedor</div>
                     </button>
                 </div>
             </div>

@@ -1,55 +1,53 @@
 <?php
     session_start();
 
-    // CONEXÃO COM O BANCO
     $conn = new mysqli("localhost", "root", "", "hashi");
 
     if ($conn->connect_error) {
         die("Erro na conexão com o banco: " . $conn->connect_error);
     }
-
     $conn->set_charset("utf8mb4");
-
-    // PEGAR CATEGORIA DA URL
-    $categoria = $_GET['categoria'] ?? '';
-
-    // BUSCAR PRODUTOS DO BANCO
-    if ($categoria !== '') {
-
-        // Busca somente os produtos da categoria selecionada
-        $sql = "SELECT id_produto, nome, valor, categoria
-                FROM produtos
-                WHERE categoria = ?
-                ORDER BY nome ASC";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt) {
-            die("Erro ao preparar consulta: " . $conn->error);
-        }
-        $stmt->bind_param("s", $categoria);
-        if (!$stmt->execute()) {
-            die("Erro ao executar consulta: " . $stmt->error);
-        }
-        $resultado = $stmt->get_result();
-    } else {
-        // Se nenhuma categoria foi selecionada,
-        // mostra todos os produtos
-        $sql = "SELECT id_produto, nome, valor, categoria
-                FROM produtos
-                ORDER BY nome ASC";
-        $resultado = $conn->query($sql);
-        if (!$resultado) {
-            die("Erro na consulta: " . $conn->error);
-        }
+    // =====================================================
+    // BUSCAR PRODUTOS
+    // =====================================================
+    $sql = "SELECT id_produto, nome, valor, categoria
+            FROM produtos
+            ORDER BY nome ASC";
+    $resultado = $conn->query($sql);
+    if (!$resultado) {
+        die("Erro na consulta: " . $conn->error);
     }
-    // MONTAR ARRAY DE PRODUTOS
-    $itens = [];
+    // =====================================================
+    // CATEGORIAS
+    // =====================================================
+    $categorias = [
+        'prato quente'  => 'Pratos Quentes',
+        'entrada'       => 'Entradas',
+        'poke'          => 'Pokes',
+        'temaki'        => 'Temakis',
+        'hot roll'      => 'Hot Roll',
+        'hossomaki'     => 'Hossomaki',
+        'uramaki'       => 'Uramaki',
+        'especial'      => 'Especiais',
+        'combinado'     => 'Combinados',
+        'sobremesa'     => 'Sobremesas',
+        'refrigerante'  => 'Refrigerantes',
+        'cerveja'       => 'Cervejas',
+        'agua'          => 'Águas',
+        'suco'          => 'Sucos'
+    ];
+    // =====================================================
+    // SEPARAR PRODUTOS POR CATEGORIA
+    // =====================================================
+    $produtosPorCategoria = [];
+    foreach ($categorias as $categoria => $titulo) {
+        $produtosPorCategoria[$categoria] = [];
+    }
     while ($produto = $resultado->fetch_assoc()) {
-
-        $itens[$produto['id_produto']] = [
-            'nome' => $produto['nome'],
-            'valor' => $produto['valor'],
-            'categoria' => $produto['categoria']
-        ];
+        $categoria = $produto['categoria'];
+        if (isset($produtosPorCategoria[$categoria])) {
+            $produtosPorCategoria[$categoria][] = $produto;
+        }
     }
 ?>
 <!DOCTYPE html>
@@ -91,7 +89,7 @@
                 <div id="" align="center">
                     <button class="btn" onclick="window.location.href=''">
                         <img class="icons_menu" src="icons/">
-                        <div style="font-size: 18px;">Cadastrar Bairro</div>
+                        <div style="font-size: 18px;">Cadastrar Fornecedor</div>
                     </button>
                 </div>              
             </div>
@@ -102,126 +100,46 @@
             </div>
         </div>
         
-        <div style="display: flex; width: 40%; height: 100vh;">
+        <div style="display: flex; width: 90%; height: 100vh;">
             <div class="div_nov_ped" align="center" style="overflow-y: auto; height: 100vh;">
                 <form action="imprimir_comanda.php" method="POST" onsubmit="prepararEnvio()">
                 <!-- =================================================
-                    LISTA DE PRODUTOS
+                    PRODUTOS
                 ================================================== -->
-                <div style="width: 100%; border: 1px solid"id="div_categorias">
-                    <div style="display: flex;" align="center" > 
-                        <div>
-                            <button type="button" >
-                                Pratos quentes
-                            </button>
-                        </div>
-                        <div>
-                            <button type="button">
-                                Entradas
-                            </button>
-                        </div>
-                        <div>
-                            <button type="button">
-                                Poke
-                            </button>
-                        </div>
-                        <div>
-                            <button type="button">
-                                Temaki
-                            </button>
-                        </div>
-                        
-                        
-                    </div>
-                    <div style="display: flex;" align="center">
-                        <div>
-                            <button type="button">
-                                Hot roll
-                            </button>
-                        </div>
-                        <div>
-                            <button type="button">
-                                Especial
-                            </button>
-                        </div>
-                        <div>
-                            <button type="button">
-                                Combinado
-                            </button>
-                        </div>
-                        
-                        <div>
-                            <button type="button">
-                                Hossomaki
-                            </button>
-                        </div>
-                        <div>
-                            <button type="button">
-                                Uramaki
-                            </button>
-                        </div>
-                    </div>
-                    <div style="display: flex;">
-                        <div>
-                            <button type="button">
-                                Sobremesa
-                            </button>
-                        </div>
-                        <div>
-                            <button type="button">
-                                Refrigerante
-                            </button>
-                        </div>
-                        <div>
-                            <button type="button">
-                                Cerveja
-                            </button>
-                        </div>
-                        <div>
-                            <button type="button">
-                                Água
-                            </button>
-                        </div>
-                        <div>
-                            <button type="button">
-                                Suco
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                    <div class="carrinho_container">
-                        <?php if (!empty($itens)) { ?>
-                            <?php foreach ($itens as $key => $value) { ?>
-                                <div class="produto">
-                                    <!-- NOME -->
-                                    <strong>
-                                        <?php echo htmlspecialchars($value['nome']); ?>
-                                    </strong>
-                                    <br>
-                                    <!-- PREÇO -->
-                                    R$
-                                    <?php echo number_format($value['valor'],2,',','.');?>
-                                    <br>
-                                    <!-- ADICIONAR -->
-                                    <button type="button" id="btn_adicionar" onclick="adicionarAoCarrinho('<?php echo addslashes($value['nome']); ?>', '<?php echo $value['valor']; ?>')">
-                                        Adicionar
-                                    </button>
+                <?php foreach ($categorias as $categoria => $titulo) { ?>
+                <div style="border: 1px solid; margin-top: 8px;">
+                    <div class="categoria">
+                        <h2>
+                            <?php echo htmlspecialchars($titulo); ?>:
+                        </h2>
+                        <div class="carrinho_container">
+                            <?php if (!empty($produtosPorCategoria[$categoria])) { ?>
+                                <?php foreach ($produtosPorCategoria[$categoria] as $produto) { ?>
+                                    <div class="produto">
+                                        <strong>
+                                            <?php echo htmlspecialchars($produto['nome']); ?>
+                                        </strong>
+                                        <br>
+                                        R$
+                                        <?php
+                                        echo number_format($produto['valor'],2,',','.');?>
+                                        <br>
+                                        <button type="button" class="btn_adicionar" onclick="adicionarAoCarrinho( '<?php echo addslashes($produto['nome']); ?>', '<?php echo $produto['valor']; ?>' )" >
+                                            Adicionar
+                                        </button>
+                                    </div>
+                                <?php } ?>
+                            <?php } else { ?>
+                                <div style=" width: 100%; padding: 20px;" >
+                                    Nenhum produto cadastrado.
                                 </div>
                             <?php } ?>
-                        <?php } else { ?>
-                            <!-- =================================================
-                                NENHUM PRODUTO
-                            ================================================== -->
-                            <div align="center" style=" width: 100%; padding: 30px; color: #ffffff;" >
-                                <h2>
-                                    Nenhum produto encontrado nesta categoria.
-                                </h2>
-                            </div>
-                        <?php } ?>
+                        </div>
                     </div>
                 </div>
+                <?php } ?>
             </div>
+        </div>
             <div class="div_nov_ped" align='center' style="overflow-y: auto; height: 100vh;">
                 <div align="center">
                     <h2>Carrinho:</h2>
