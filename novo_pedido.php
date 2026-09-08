@@ -34,7 +34,8 @@
         'refrigerante'  => 'Refrigerantes',
         'cerveja'       => 'Cervejas',
         'agua'          => 'Águas',
-        'suco'          => 'Sucos'
+        'suco'          => 'Sucos',
+        'promocao'      => 'Promocao'
     ];
     // =====================================================
     // SEPARAR PRODUTOS POR CATEGORIA
