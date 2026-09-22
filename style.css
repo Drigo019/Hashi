@@ -175,14 +175,18 @@ body {
     margin-top: 5px;
 }
 .produto{
-    border: 2px solid;
+    border: 4px solid;
     margin: 10px;
+}
+.produto button{
+    margin-bottom: 4px; 
 }
 .carrinho_container {
     width: 100%;
     height: 100%;
     overflow-y: auto;
     overflow-x: auto;
+    margin: 0;
 }
 
 
