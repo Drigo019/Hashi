@@ -121,14 +121,16 @@
                             <div id="botoes_data">
                                 <input type="button" value="Ontem" id="ontem" onclick="alterarPeriodo('ontem')">
                                 <input type="button" value="Hoje" id="hoje" onclick="alterarPeriodo('hoje')">
+                                <button type="button" onclick="abrirPopup()">
+                                    Fechamento
+                                </button>
                             </div>
                         </div>
                         <?php
                             $sql_total = "
                                 SELECT SUM(total) AS total_dia
                                 FROM vendas
-                                WHERE DATE(data) = CURDATE() and status = 'entregue'
-                            ";
+                                WHERE DATE(data) = CURDATE() and status = 'entregue'";
                             $resultado_total = mysqli_query($conexao, $sql_total);
                             $dados_total = mysqli_fetch_assoc($resultado_total);
                             $total_dia = $dados_total['total_dia'] ?? 0;
@@ -181,15 +183,7 @@
                             </tr>
                             <?php
                             $sql = "
-                                SELECT
-                                    v.id_venda,
-                                    c.nome,
-                                    c.telefone,
-                                    v.total,
-                                    v.forma_pagamento,
-                                    v.tipo_entrega,
-                                    v.data,
-                                    v.status
+                                SELECT v.id_venda, c.nome, c.telefone, v.total, v.forma_pagamento, v.tipo_entrega, v.data, v.status
                                 FROM vendas v
                                 JOIN clientes c
                                 ON c.id_cliente = v.id_cliente
@@ -294,5 +288,91 @@
         </div>
     </div>
     <script src="script.js"></script>
+<!-- =====================================================
+                        POPUPs
+===================================================== -->
+<!-- =====================================================
+    Janela do Popup Login
+===================================================== -->
+<div id="fechamento" class="modal_fundo">
+    <div class="modal">
+        <button type="button"class="btn-fechar"onclick="fecharPopuplogin()">
+            ×
+        </button>
+        <form action="imprimir_fechamento" method="post">
+            <table id="tabela_fechamento" align="center"> 
+                <tr>
+                    <th>
+                        Dinheiro:
+                    </th>
+                    
+                    <th>
+                        Cartão:
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
+                    </th>
+                    <th>
+                        R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Pix:
+                    </th>
+                    
+                    <th>
+                        IFOOD:
+                    </th>
+                    
+                </tr>
+                <tr>
+                    <th>
+                        R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
+                    </th>
+                    <th>
+                        R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Fiado:
+                    </th>
+                    <th>
+                        R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Total:
+                    </th>
+                    <th>
+                        R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
+                    </th>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
 </body>
 </html>
+
+<script>
+    // =====================================================
+    // Popup
+    // =====================================================
+    function abrirPopup() {
+            document.getElementById("fechamento").style.display = "flex";
+        }
+    function fecharPopuplogin() {
+        document.getElementById("fechamento").style.display = "none";
+    }
+    // Fechar clicando no fundo escuro
+    document.getElementById("fechamento").addEventListener("click", function(event) {
+        if (event.target === this) {
+            fecharPopup();
+        }
+    });
+</script>
