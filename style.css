@@ -306,6 +306,11 @@ body {
     overflow-y: auto;
     overflow-x: auto;
 }
+#area_tabela_pratos {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: auto;
+}
 
 
 /* ==========================
@@ -313,6 +318,11 @@ body {
 ========================== */
 #table_clientes {
     width: 86%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+}
+#table_pratos {
+    width: 100%;
     border-collapse: collapse;
     font-family: Arial, sans-serif;
 }
@@ -397,6 +407,19 @@ body {
     border-radius: 4px;
 }
 
+/* ==========================
+   SELECT DE categoria
+========================== */
+.select_categoria{
+    width: 100%;
+    min-width: 140px;
+    padding: 6px;
+    text-align: center;
+    font-size: 15px;
+    cursor: pointer;
+    border: 1px solid #555;
+    border-radius: 4px;
+}
 
 /* ==========================
    BOTÕES DE FUNÇÃO
@@ -462,7 +485,7 @@ div[style*="border: 1px solid"] {
 =================*/
 .table_cadastro {
     border: 2px solid #000;
-    width: 50%;
+    margin-top: 20px;
 }
 .table_cadastro th {
     margin-bottom: 10px;
@@ -473,14 +496,12 @@ div[style*="border: 1px solid"] {
 }
 .table_cadastro input[type="text"],
 .table_cadastro input[type="number"] {
-    width: 98%;
     padding: 5px;
     font-size: 18px;
     border: 1px solid #4d4d4d;
     border-radius: 4px;
 }
 .table_cadastro select{
-    width: 100%;
     padding: 5px;
     font-size: 18px;
     border: 1px solid #4d4d4d;
@@ -488,7 +509,6 @@ div[style*="border: 1px solid"] {
 }
 
 .table_cadastro button {
-    width: 100%;
     padding: 10px;
     font-size: 18px;
     background-color: #990000ab;

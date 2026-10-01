@@ -82,9 +82,9 @@
                     </button>
                 </div>
                 <div id="" align="center">
-                    <button class="btn" onclick="window.location.href='cadastrar_produto.html'">
-                        <img class="" src="icons/">
-                        <div style="font-size: 18px;">Cadastrar Prato</div>
+                    <button class="btn" onclick="window.location.href='produtos.php'">
+                        <img class="icons_menu" src="icons/prato.png">
+                        <div style="font-size: 18px;">Pratos</div>
                     </button>
                 </div>
                 <div id="" align="center">
@@ -292,7 +292,7 @@
                         POPUPs
 ===================================================== -->
 <!-- =====================================================
-    Janela do Popup Login
+    Popup Fechameto
 ===================================================== -->
 <div id="fechamento" class="modal_fundo">
     <div class="modal">
