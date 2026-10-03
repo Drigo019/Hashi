@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 09/09/2026 às 19:16
+-- Tempo de geração: 03/10/2026 às 18:21
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -47,7 +47,9 @@ INSERT INTO `clientes` (`id_cliente`, `id_endereco_cliente`, `nome`, `telefone`,
 (17, NULL, 'Rodrigo', '19 992343499', NULL),
 (18, NULL, 'Rodrigo', '19 992343491', NULL),
 (19, NULL, 'Rodrigo', '19 992343492', NULL),
-(20, NULL, 'Rodrigo', '123456', NULL);
+(20, NULL, 'Rodrigo', '123456', NULL),
+(21, NULL, '1', '1', NULL),
+(22, NULL, 'teste', 'teste', NULL);
 
 -- --------------------------------------------------------
 
@@ -255,7 +257,7 @@ CREATE TABLE `vendas` (
   `id_produto` int(11) DEFAULT NULL,
   `data` datetime NOT NULL DEFAULT current_timestamp(),
   `total` float(10,2) DEFAULT NULL,
-  `forma_pagamento` enum('dinheiro','cartao','pix','fiado') NOT NULL,
+  `forma_pagamento` enum('dinheiro','cartao','pix','fiado','ifood') NOT NULL,
   `obs_pagamento` varchar(255) DEFAULT NULL,
   `tipo_entrega` enum('entregar','retirada') NOT NULL,
   `status` enum('criado','aceito','preparando','pronto','saiu para entrega','entregue') NOT NULL
@@ -266,10 +268,11 @@ CREATE TABLE `vendas` (
 --
 
 INSERT INTO `vendas` (`id_venda`, `id_cliente`, `id_endereco_cliente`, `id_produto`, `data`, `total`, `forma_pagamento`, `obs_pagamento`, `tipo_entrega`, `status`) VALUES
-(58, 17, 20, NULL, '2026-08-24 04:29:54', 6.00, 'dinheiro', '', 'entregar', 'criado'),
-(59, 17, 21, NULL, '2026-08-24 04:30:08', 6.00, 'dinheiro', '', 'entregar', 'entregue'),
-(60, 17, 20, NULL, '2026-08-24 07:08:24', 61.00, 'pix', 'sem Tarê', 'entregar', 'criado'),
-(62, 15, NULL, NULL, '2026-09-07 20:05:10', 240000.00, 'dinheiro', '', 'retirada', 'criado');
+(66, 21, NULL, NULL, '2026-10-01 16:15:11', 0.00, 'dinheiro', '', 'retirada', 'entregue'),
+(68, 21, NULL, NULL, '2026-10-01 16:15:16', 0.00, 'dinheiro', '', 'retirada', 'pronto'),
+(69, 22, NULL, NULL, '2026-10-03 12:49:46', 35.00, 'dinheiro', '', 'retirada', 'preparando'),
+(70, 22, NULL, NULL, '2026-10-03 12:53:33', 35.00, 'ifood', '', 'retirada', 'aceito'),
+(71, 22, NULL, NULL, '2026-10-03 12:56:35', 35.00, 'dinheiro', '', 'retirada', 'criado');
 
 --
 -- Índices para tabelas despejadas
@@ -333,7 +336,7 @@ ALTER TABLE `vendas`
 -- AUTO_INCREMENT de tabela `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de tabela `enderecos_cliente`
@@ -363,13 +366,13 @@ ALTER TABLE `itens_venda`
 -- AUTO_INCREMENT de tabela `produtos`
 --
 ALTER TABLE `produtos`
-  MODIFY `id_produto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=132;
+  MODIFY `id_produto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
 
 --
 -- AUTO_INCREMENT de tabela `vendas`
 --
 ALTER TABLE `vendas`
-  MODIFY `id_venda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `id_venda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- Restrições para tabelas despejadas

@@ -64,7 +64,7 @@
         <div style="display: flex;">
             <div id="menu">
                 <div id="inicio" align="center" >
-                    <button class="btn" onclick="window.location.href='inicio.html'">
+                    <button class="btn" onclick="window.location.href='inicio.php'">
                         <img class="icons_menu" src="icons/casa.png">
                         <div style="font-size: 18px;">Início</div>
                     </button>
@@ -319,6 +319,7 @@
                                         <option value="dinheiro">Dinheiro</option>
                                         <option value="cartao">Cartão</option>
                                         <option value="pix">Pix</option>
+                                        <option value="ifood">Ifood</option>
                                         <option value="fiado">Fiado</option>
                                     </select>
                                 </td>

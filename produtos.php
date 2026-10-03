@@ -16,27 +16,23 @@
         <div style="display: flex;">
             <div id="menu">
                 <div id="inicio" align="center">
-                    <button type="button" class="btn"
-                        onclick="window.location.href='inicio.html'">
-                        <img class="icons_menu" src="icons/casa.png">
+                    <button class="btn" onclick="window.location.href='inicio.php'" >
+                        <img class="icons_menu" src="icons/casa.png" >
                         <div style="font-size: 18px;">
                             Início
                         </div>
                     </button>
-                </div>
+                </div> 
                 <div id="novo_pedido" align="center">
-                    <button type="button" class="btn"
-                        onclick="window.location.href='novo_pedido.php'">
-                        <img class="icons_menu"
-                            src="icons/carrinho_adicionar.png">
+                    <button class="btn" onclick="window.location.href='novo_pedido.php'">
+                        <img class="icons_menu" src="icons/carrinho_adicionar.png">
                         <div style="font-size: 18px;">
                             Novo Pedido
                         </div>
                     </button>
                 </div>
                 <div align="center">
-                    <button type="button" class="btn"
-                        onclick="window.location.href='ver_pedidos.php'">
+                    <button class="btn" onclick="window.location.href='ver_pedidos.php'">
                         <img class="icons_menu" src="icons/pedido.png">
                         <div style="font-size: 18px;">
                             Ver Pedidos
@@ -44,13 +40,13 @@
                     </button>
                 </div>
                 <div align="center">
-                    <button type="button" class="btn" onclick="window.location.href='produtos.html'">
+                    <button class="btn" onclick="window.location.href='produtos.php'">
                         <img class="icons_menu" src="icons/prato.png">
                         <div style="font-size: 18px;">Pratos</div>
                     </button>
                 </div>
                 <div align="center">
-                    <button type="button" class="btn" onclick="window.location.href=''">
+                    <button class="btn" onclick="window.location.href=''">
                         <img class="icons_menu" src="icons/">
                         <div style="font-size: 18px;">
                             Cadastrar Fornecedor
@@ -128,7 +124,7 @@
                                 </td>
                                 <!-- CANCELAR -->
                                 <td class="th">
-                                    <form method="POST" action="deletar_produto.php" onsubmit=" return confirm( 'Tem certeza que deseja cancelar?' ); " >
+                                    <form method="POST" action="deletar_produto.php" onsubmit=" return confirm( 'Tem certeza que deseja tirar esse prato do cardapio?' ); " >
                                         <input type="hidden" name="id_cancelar" value="<?php echo $linha['id_produto']; ?>" >
                                         <button class="btn_funcao" type="submit" >
                                             ❎
@@ -137,7 +133,7 @@
                                 </td>
                                 <!-- EDITAR -->
                                 <td class="th">
-                                    <form method="POST" action="editar_produto.php" onsubmit=" return confirm('Tem certeza que deseja editar?'); " >
+                                    <form method="POST" action="editar_produto.php" onsubmit=" return confirm('Tem certeza que deseja editar esse prato?'); " >
                                         <input type="hidden" name="id_editar" value="<?php echo $linha['id_produto']; ?>" >
                                         <button class="btn_funcao" type="submit" >
                                             📄
@@ -156,7 +152,7 @@
     ===================================================== -->
     <div id="cadastro_prato" class="modal_fundo">
         <div class="modal">
-            <button type="button"class="btn-fechar"onclick="fechar_cadastro_prato()">
+            <button type="button" class="btn_fechar" onclick="fechar_cadastro_prato()">
                 ×
             </button>
             <form action="cadastrar_produto.php" method="post">
@@ -243,23 +239,6 @@
             </form>
         </div>
     </div>
-    <script>
-            // =====================================================
-        // Popup
-        // =====================================================
-        function abrir_popup_cadstro_produto() {
-                document.getElementById("cadastro_prato").style.display = "flex";
-            }
-        function fechar_cadastro_prato() {
-            document.getElementById("cadastro_prato").style.display = "none";
-        }
-        // Fechar clicando no fundo escuro
-        document.getElementById("cadastro_prato").addEventListener("click", function(event) {
-            if (event.target === this) {
-                fechar_cadastro_prato();
-            }
-        });
-    </script>
     <!-- JAVASCRIPT -->
     <script src="script.js"></script>
 </body>

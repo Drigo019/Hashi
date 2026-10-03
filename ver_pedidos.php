@@ -41,6 +41,44 @@
     }
     $dados_total = mysqli_fetch_assoc($resultado_total);
     $total_periodo = $dados_total['total_periodo'] ?? 0;
+
+    // =====================================================
+    // TOTAL POR FORMA DE PAGAMENTO
+    // =====================================================
+
+    $sql_pagamentos = "
+        SELECT 
+            forma_pagamento,
+            SUM(total) AS total
+        FROM vendas
+        WHERE DATE(data) = CURDATE()
+        AND status = 'entregue'
+        GROUP BY forma_pagamento
+    ";
+
+    $resultado_pagamentos = mysqli_query($conexao, $sql_pagamentos);
+
+    if (!$resultado_pagamentos) {
+        die("Erro ao calcular pagamentos: " . mysqli_error($conexao));
+    }
+
+    $pagamentos = [
+        'dinheiro' => 0,
+        'cartão' => 0,
+        'pix' => 0,
+        'ifood' => 0,
+        'fiado' => 0
+    ];
+
+    while ($linha_pagamento = mysqli_fetch_assoc($resultado_pagamentos)) {
+
+        $forma = $linha_pagamento['forma_pagamento'];
+        $valor = $linha_pagamento['total'];
+
+        if (isset($pagamentos[$forma])) {
+            $pagamentos[$forma] = $valor;
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -58,7 +96,7 @@
             =========================== -->
             <div id="menu">
                 <div id="inicio" align="center">
-                    <button class="btn" onclick="window.location.href='inicio.html'" >
+                    <button class="btn" onclick="window.location.href='inicio.php'" >
                         <img class="icons_menu" src="icons/casa.png" >
                         <div style="font-size: 18px;">
                             Início
@@ -296,69 +334,70 @@
 ===================================================== -->
 <div id="fechamento" class="modal_fundo">
     <div class="modal">
-        <button type="button"class="btn-fechar"onclick="fecharPopuplogin()">
+        <button type="button" class="btn_fechar" onclick="fecharPopuplogin()">
             ×
         </button>
-        <form action="imprimir_fechamento" method="post">
-            <table id="tabela_fechamento" align="center"> 
-                <tr>
-                    <th>
-                        Dinheiro:
-                    </th>
-                    
-                    <th>
-                        Cartão:
-                    </th>
-                </tr>
-                <tr>
-                    <th>
-                        R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
-                    </th>
-                    <th>
-                        R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
-                    </th>
-                </tr>
-                <tr>
-                    <th>
-                        Pix:
-                    </th>
-                    
-                    <th>
-                        IFOOD:
-                    </th>
-                    
-                </tr>
-                <tr>
-                    <th>
-                        R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
-                    </th>
-                    <th>
-                        R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
-                    </th>
-                </tr>
-                <tr>
-                    <th>
-                        Fiado:
-                    </th>
-                    <th>
-                        R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
-                    </th>
-                </tr>
-                <tr>
-                    <th>
-                        Total:
-                    </th>
-                    <th>
-                        R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
-                    </th>
-                </tr>
-            </table>
-        </form>
+        <table id="tabela_fechamento" align="center">
+            <tr>
+                <th>
+                    Dinheiro:
+                </th>
+                <th>
+                    Cartão:
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    R$ <?php echo number_format($pagamentos['dinheiro'], 2, ',', '.'); ?>
+                </td>
+                <td>
+                    R$ <?php echo number_format($pagamentos['cartão'], 2, ',', '.'); ?>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Pix:
+                </th>
+                <th>
+                    IFood:
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    R$ <?php echo number_format($pagamentos['pix'], 2, ',', '.'); ?>
+                </td>
+                <td>
+                    R$ <?php echo number_format($pagamentos['ifood'], 2, ',', '.'); ?>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Fiado:
+                </th>
+                <th>
+                    Total:
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    R$ <?php echo number_format($pagamentos['fiado'], 2, ',', '.'); ?>
+                </td>
+                <td>
+                    R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="2">
+                    <button type="button" class="btn_imprimir" onclick="imprimirFechamento()">
+                        Imprimir
+                    </button>
+                </th>
+            </tr>
+        </table>
     </div>
 </div>
 </body>
 </html>
-
 <script>
     // =====================================================
     // Popup
@@ -375,4 +414,8 @@
             fecharPopup();
         }
     });
+
+    function imprimirFechamento() {
+        window.print();
+    }
 </script>

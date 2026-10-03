@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     mysqli_stmt_bind_param($stmt, "sdss", $nome, $valor, $categoria, $descricao);
     $result = mysqli_stmt_execute($stmt);
     if ($result) {
-        echo "<script> alert('Prato cadastrado com sucesso!'); window.location.href='cadastrar_produto.html'; </script>";
+        echo "<script> alert('Prato cadastrado com sucesso!'); window.location.href='produtos.php'; </script>";
     } else {
         echo "<script> alert('Erro ao cadastrar prato: " . mysqli_stmt_error($stmt) . "'); </script>";
     }
