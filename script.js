@@ -38,77 +38,6 @@ window.addEventListener("load", function () {
 
 });
 
-
-// ==============================
-// CARRINHO
-// ==============================
-
-function atualizarCarrinho() {
-
-    let lista = document.getElementById("carrinho_lista");
-
-    if (!lista) {
-        return;
-    }
-
-    lista.innerHTML = "";
-
-    let total = 0;
-
-    carrinho.forEach(function (item, index) {
-
-        let div = document.createElement("div");
-
-        let subtotal = item.preco * item.qtd;
-
-        total += subtotal;
-
-        div.innerHTML = `
-            ${item.nome} (x${item.qtd}) - R$ ${subtotal.toFixed(2)}
-            <button type="button" onclick="removerItem(${index})">
-                ❌
-            </button>
-        `;
-
-        lista.appendChild(div);
-
-    });
-
-
-    // Verifica o tipo de entrega
-    let tipoEntrega = document.getElementById("tipo_entrega");
-
-    if (tipoEntrega && tipoEntrega.value === "entregar") {
-
-        total += 6.00;
-
-    }
-
-
-    // Mostra o total
-    let totalVisivel = document.getElementById("total_visivel");
-
-    if (totalVisivel) {
-
-        totalVisivel.value = total
-            .toFixed(2)
-            .replace(".", ",");
-
-    }
-
-
-    // Envia o total para o PHP
-    let totalHidden = document.getElementById("total_hidden");
-
-    if (totalHidden) {
-
-        totalHidden.value = total.toFixed(2);
-
-    }
-
-}
-
-
 /* ==============================
     STATUS DOS PEDIDOS
 ============================== */
@@ -277,22 +206,3 @@ if (telefone && listaClientes) {
             });
     });
 }
-
-// ============================== //
-// POPUs                          //
-// ============================== //
-// =====================================================
-// Popup de cadastro de produto
-// =====================================================
-function abrir_popup_cadstro_produto() {
-    document.getElementById("cadastro_prato").style.display = "flex";
-}
-function fechar_cadastro_prato() {
-    document.getElementById("cadastro_prato").style.display = "none";
-}
-// Fechar clicando no fundo escuro
-document.getElementById("cadastro_prato").addEventListener("click", function (event) {
-    if (event.target === this) {
-        fechar_cadastro_prato();
-    }
-});

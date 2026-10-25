@@ -243,3 +243,17 @@
     <script src="script.js"></script>
 </body>
 </html>
+<script>
+    function abrir_popup_cadstro_produto() {
+    document.getElementById("cadastro_prato").style.display = "flex";
+}
+function fechar_cadastro_prato() {
+    document.getElementById("cadastro_prato").style.display = "none";
+}
+// Fechar clicando no fundo escuro
+document.getElementById("cadastro_prato").addEventListener("click", function (event) {
+    if (event.target === this) {
+        fechar_cadastro_prato();
+    }
+});
+</script>

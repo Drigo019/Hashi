@@ -1,67 +1,69 @@
 <?php
-    session_start();
-    if (empty($_SESSION['token_pedido'])) {
-        $_SESSION['token_pedido'] = bin2hex(random_bytes(32));
-    }
+session_start();
+if (empty($_SESSION['token_pedido'])) {
+    $_SESSION['token_pedido'] = bin2hex(random_bytes(32));
+}
 
-    $conn = new mysqli("localhost", "root", "", "hashi");
+$conn = new mysqli("localhost", "root", "", "hashi");
 
-    if ($conn->connect_error) {
-        die("Erro na conexão com o banco: " . $conn->connect_error);
-    }
-    $conn->set_charset("utf8mb4");
-    // =====================================================
-    // BUSCAR PRODUTOS
-    // =====================================================
-    $sql = "SELECT id_produto, nome, valor, categoria
+if ($conn->connect_error) {
+    die("Erro na conexão com o banco: " . $conn->connect_error);
+}
+$conn->set_charset("utf8mb4");
+// =====================================================
+// BUSCAR PRODUTOS
+// =====================================================
+$sql = "SELECT id_produto, nome, valor, categoria
                 FROM produtos
                 ORDER BY nome ASC";
-    $resultado = $conn->query($sql);
-    if (!$resultado) {
-        die("Erro na consulta: " . $conn->error);
+$resultado = $conn->query($sql);
+if (!$resultado) {
+    die("Erro na consulta: " . $conn->error);
+}
+// =====================================================
+// CATEGORIAS
+// =====================================================
+$categorias = [
+    'prato quente'  => 'Pratos Quentes',
+    'entrada'       => 'Entradas',
+    'poke'          => 'Pokes',
+    'temaki'        => 'Temakis',
+    'hot roll'      => 'Hot Roll',
+    'hossomaki'     => 'Hossomaki',
+    'uramaki'       => 'Uramaki',
+    'especial'      => 'Especiais',
+    'combinado'     => 'Combinados',
+    'sobremesa'     => 'Sobremesas',
+    'refrigerante'  => 'Refrigerantes',
+    'cerveja'       => 'Cervejas',
+    'agua'          => 'Águas',
+    'suco'          => 'Sucos',
+    'promocao'      => 'Promocao'
+];
+// =====================================================
+// SEPARAR PRODUTOS POR CATEGORIA
+// =====================================================
+$produtosPorCategoria = [];
+foreach ($categorias as $categoria => $titulo) {
+    $produtosPorCategoria[$categoria] = [];
+}
+while ($produto = $resultado->fetch_assoc()) {
+    $categoria = $produto['categoria'];
+    if (isset($produtosPorCategoria[$categoria])) {
+        $produtosPorCategoria[$categoria][] = $produto;
     }
-    // =====================================================
-    // CATEGORIAS
-    // =====================================================
-    $categorias = [
-        'prato quente'  => 'Pratos Quentes',
-        'entrada'       => 'Entradas',
-        'poke'          => 'Pokes',
-        'temaki'        => 'Temakis',
-        'hot roll'      => 'Hot Roll',
-        'hossomaki'     => 'Hossomaki',
-        'uramaki'       => 'Uramaki',
-        'especial'      => 'Especiais',
-        'combinado'     => 'Combinados',
-        'sobremesa'     => 'Sobremesas',
-        'refrigerante'  => 'Refrigerantes',
-        'cerveja'       => 'Cervejas',
-        'agua'          => 'Águas',
-        'suco'          => 'Sucos',
-        'promocao'      => 'Promocao'
-    ];
-    // =====================================================
-    // SEPARAR PRODUTOS POR CATEGORIA
-    // =====================================================
-    $produtosPorCategoria = [];
-    foreach ($categorias as $categoria => $titulo) {
-        $produtosPorCategoria[$categoria] = [];
-    }
-    while ($produto = $resultado->fetch_assoc()) {
-        $categoria = $produto['categoria'];
-        if (isset($produtosPorCategoria[$categoria])) {
-            $produtosPorCategoria[$categoria][] = $produto;
-        }
-    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="body">
     <div style="display: flex;">
         <div style="display: flex;">
@@ -107,7 +109,7 @@
         <div style="display: flex; width: 90%; height: 100vh;">
             <div class="div_nov_ped" align="center" style="overflow-y: auto; height: 100vh;">
                 <form action="imprimir_comanda.php" method="POST" onsubmit="return prepararEnvio()">
-                    <input type="hidden" name="token_pedido" value="<?= htmlspecialchars($_SESSION['token_pedido'], ENT_QUOTES, 'UTF-8') ?>" >
+                    <input type="hidden" name="token_pedido" value="<?= htmlspecialchars($_SESSION['token_pedido'], ENT_QUOTES, 'UTF-8') ?>">
                     <!-- =================================================
                         PRODUTOS
                     ================================================== -->
@@ -129,7 +131,7 @@
                                                 <?php
                                                 echo number_format($produto['valor'], 2, ',', '.'); ?>
                                                 <br>
-                                                <button type="button" class="btn_adicionar" onclick="adicionarAoCarrinho( '<?php echo addslashes($produto['nome']); ?>', '<?php echo $produto['valor']; ?>' )">
+                                                <button type="button" class="btn_adicionar" onclick='adicionarAoCarrinho( <?= (int) $produto["id_produto"] ?>, <?= json_encode($produto["nome"], JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP) ?>, <?= json_encode((float) $produto["valor"]) ?>)'>
                                                     Adicionar
                                                 </button>
                                             </div>
@@ -189,7 +191,7 @@
                         </tr>
                         <tr>
                             <td colspan="2" class="td_pedido">
-                                <select class="select" name="tipo_entrega" id="tipo_entrega" onchage="atualizarBanco()">
+                                <select class="select" name="tipo_entrega" id="tipo_entrega" onchange="atualizar_entrega()">
                                     <option value="retirada" selected>Retirada</option>
                                     <option value="entregar">Entregar</option>
                                 </select>
@@ -354,13 +356,16 @@
     <script>
         let carrinho = [];
 
-        function adicionarAoCarrinho(nome, preco) {
-            let itemExistente = carrinho.find(item => item.nome === nome);
+        function adicionarAoCarrinho(id_produto, nome, preco) {
+            let itemExistente = carrinho.find(
+                item => item.id_produto === Number(id_produto)
+            );
 
             if (itemExistente) {
                 itemExistente.qtd += 1;
             } else {
                 carrinho.push({
+                    id_produto: Number(id_produto),
                     nome: nome,
                     preco: Number(preco),
                     qtd: 1
@@ -381,47 +386,63 @@
         }
 
         function atualizarCarrinho() {
-            let lista = document.getElementById("carrinho_lista");
+            const lista = document.getElementById("carrinho_lista");
             lista.innerHTML = "";
 
             let total = 0;
 
             carrinho.forEach((item, index) => {
-                let div = document.createElement("div");
+                const div = document.createElement("div");
+                const subtotal = item.preco * item.qtd;
 
-                let subtotal = item.preco * item.qtd;
                 total += subtotal;
 
-                div.innerHTML = `
-                    ${item.nome} (x${item.qtd}) - R$ ${subtotal.toFixed(2)}
-                    <button onclick="removerItem(${index})">❌</button>
-                `;
+                const texto = document.createElement("span");
+                texto.textContent =
+                    `${item.nome} (x${item.qtd}) - R$ ${subtotal.toFixed(2)}`;
 
-                lista.appendChild(div); // cada item vira uma linha
+                const botao = document.createElement("button");
+                botao.type = "button";
+                botao.textContent = "❌";
+                botao.style.height = "35px";
+                botao.style.width = "35px";
+                botao.addEventListener("click", () => removerItem(index));
+
+                div.appendChild(texto);
+                div.appendChild(botao);
+                lista.appendChild(div);
             });
 
-            document.getElementById("total_visivel").value = total.toFixed(2);
-            document.getElementById("total_hidden").value = total.toFixed(2);
+            document.getElementById("total_visivel").value =
+                total.toFixed(2);
+
+            document.getElementById("total_hidden").value =
+                total.toFixed(2);
         }
 
         function prepararEnvio() {
-            let listaTexto = "";
-            let itens = [];
+            if (carrinho.length === 0) {
+                alert("Adicione pelo menos um produto ao pedido.");
+                return false;
+            }
 
-            carrinho.forEach(item => {
-                let linha = `${item.nome} (x${item.qtd}) - R$ ${(item.preco * item.qtd).toFixed(2)}`;
+            const listaTexto = carrinho.map(item => {
+                const subtotal = item.preco * item.qtd;
 
-                listaTexto += linha + "<br>";
+                return `${item.nome} (x${item.qtd}) - R$ ${subtotal.toFixed(2)}`;
+            }).join("<br>");
 
-                itens.push({
-                    nome: item.nome,
-                    qtd: item.qtd,
-                    preco: item.preco
-                });
-            });
+            const itens = carrinho.map(item => ({
+                id_produto: item.id_produto,
+                qtd: item.qtd
+            }));
 
             document.getElementById("carrinho_hidden").value = listaTexto;
-            document.getElementById("itens_hidden").value = JSON.stringify(itens);
+
+            document.getElementById("itens_hidden").value =
+                JSON.stringify(itens);
+
+            return true;
         }
 
         /*=================
@@ -503,6 +524,22 @@
                     console.error("Erro ao buscar clientes:", erro);
                 });
         });
+
+        function atualizar_entrega() {
+            const tipoEntrega = document.getElementById("tipo_entrega").value;
+            const endereco = document.getElementById("endereco");
+
+            if (tipoEntrega === "entregar") {
+                endereco.style.display = "table";
+            } else {
+                endereco.style.display = "none";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            atualizarEntrega();
+        });
     </script>
 </body>
+
 </html>

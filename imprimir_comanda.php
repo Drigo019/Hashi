@@ -31,6 +31,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $carrinho = $_POST['carrinho_lista'] ?? '';
 
+    $itensJson = $_POST['itens'] ?? '';
+    $itens = json_decode($itensJson, true);
+
+    if (
+        !is_array($itens) ||
+        empty($itens) ||
+        json_last_error() !== JSON_ERROR_NONE
+    ) {
+        exit('Carrinho inválido ou vazio.');
+    }
+
     $rua = trim($_POST['rua'] ?? '');
     $numero = trim($_POST['numero'] ?? '');
     $bairro = trim($_POST['bairro'] ?? '');
@@ -58,17 +69,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // =================================================
-    // TOTAL E TAXA DE ENTREGA
+    // VALIDAR ITENS E CALCULAR TOTAL NO SERVIDOR
     // =================================================
 
-    $total = (float) ($_POST['total'] ?? 0);
+    $total = 0.0;
+    $itensValidados = [];
 
-    if ($total < 0) {
-        exit('O valor do pedido é inválido.');
+    $sqlProduto = "
+        SELECT id_produto, nome, valor
+        FROM produtos
+        WHERE id_produto = ?
+        LIMIT 1
+    ";
+
+    $stmtProduto = mysqli_prepare($conexao, $sqlProduto);
+
+    if (!$stmtProduto) {
+        exit('Erro ao preparar a consulta dos produtos.');
     }
 
+    foreach ($itens as $item) {
+        $id_produto = filter_var(
+            $item['id_produto'] ?? null,
+            FILTER_VALIDATE_INT
+        );
+
+        $quantidade = filter_var(
+            $item['qtd'] ?? null,
+            FILTER_VALIDATE_INT
+        );
+
+        if (
+            !$id_produto ||
+            !$quantidade ||
+            $quantidade < 1 ||
+            $quantidade > 1000
+        ) {
+            mysqli_stmt_close($stmtProduto);
+            exit('Produto ou quantidade inválidos.');
+        }
+
+        mysqli_stmt_bind_param(
+            $stmtProduto,
+            'i',
+            $id_produto
+        );
+
+        if (!mysqli_stmt_execute($stmtProduto)) {
+            mysqli_stmt_close($stmtProduto);
+            exit('Erro ao consultar o produto.');
+        }
+
+        $resultadoProduto = mysqli_stmt_get_result($stmtProduto);
+        $produto = mysqli_fetch_assoc($resultadoProduto);
+
+        if (!$produto) {
+            mysqli_stmt_close($stmtProduto);
+            exit('Um dos produtos não foi encontrado.');
+        }
+
+        $valorUnitario = (float) $produto['valor'];
+        $subtotal = round($valorUnitario * $quantidade, 2);
+
+        $total += $subtotal;
+
+        $itensValidados[] = [
+            'id_produto' => (int) $produto['id_produto'],
+            'nome' => $produto['nome'],
+            'quantidade' => $quantidade,
+            'valor_unitario' => $valorUnitario,
+            'subtotal' => $subtotal
+        ];
+    }
+
+    mysqli_stmt_close($stmtProduto);
+
+    // Acrescentar a taxa de entrega
     if ($tipo_entrega === 'entregar') {
-        $total += 6.00;
+        $total = round($total + 6.00, 2);
     }
 
     // =================================================
@@ -259,6 +337,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_venda = mysqli_insert_id($conexao);
 
     mysqli_stmt_close($stmtVenda);
+
+    // =================================================
+    // SALVAR OS PRODUTOS NA TABELA itens_venda
+    // =================================================
+
+    $sqlItem = "
+        INSERT INTO itens_venda
+        (
+            id_venda,
+            id_produto,
+            quantidade,
+            valor_unitario,
+            subtotal
+        )
+        VALUES (?, ?, ?, ?, ?)
+    ";
+
+    $stmtItem = mysqli_prepare($conexao, $sqlItem);
+
+    if (!$stmtItem) {
+        exit('Erro ao preparar o cadastro dos itens.');
+    }
+
+    foreach ($itensValidados as $item) {
+        $id_produto = $item['id_produto'];
+        $quantidade = $item['quantidade'];
+        $valorUnitario = $item['valor_unitario'];
+        $subtotal = $item['subtotal'];
+
+        mysqli_stmt_bind_param(
+            $stmtItem,
+            'iiidd',
+            $id_venda,
+            $id_produto,
+            $quantidade,
+            $valorUnitario,
+            $subtotal
+        );
+
+        if (!mysqli_stmt_execute($stmtItem)) {
+            mysqli_stmt_close($stmtItem);
+
+            exit(
+                'Erro ao salvar os produtos do pedido: ' .
+                mysqli_error($conexao)
+            );
+        }
+    }
+
+    mysqli_stmt_close($stmtItem);
 
     // =================================================
     // GUARDAR OS DADOS PARA EXIBIR A COMANDA

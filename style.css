@@ -558,6 +558,29 @@ div[style*="border: 1px solid"] {
     margin-top: 20px;
 }
 
+/* Tabela editar pedido */
+#tabela_editar_pedido{
+    border: 2px solid black;
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+    border-radius: 10px;
+    border-collapse: collapse;
+}
+
+#tabela_editar_pedido tr, th{
+    border: 2px solid black;
+}
+
+.celula {
+    border: 2px solid black;
+    padding: 8px;
+    text-align: center;
+}
+.tabela-pratos {
+    border-collapse: collapse;
+}
+
 .btn_imprimir {
     width: 100%;
     height: 30px;
@@ -639,9 +662,7 @@ div[style*="border: 1px solid"] {
         border-collapse: collapse;
     }
 
-    #tabela_fechamento th,
-    #tabela_fechamento td {
-        border: 1px solid #000;
+    #tabela_fechamento th {
         padding: 10px;
         text-align: center;
     }
