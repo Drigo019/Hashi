@@ -347,6 +347,13 @@ body {
     text-align: center;
 }
 
+.th button{
+    padding: 10px;
+    text-align: center;
+    height: 40px;
+    width: 40px;
+}
+
 
 /* ==========================
    CORES DOS PEDIDOS
@@ -437,7 +444,6 @@ body {
 .btn_funcao:hover {
     transform: scale(1.05);
 }
-
 
 /* ==========================
    CONTAINER EXTERNO

@@ -111,7 +111,7 @@ function atualizarCarrinho() {
 
 /* ==============================
     STATUS DOS PEDIDOS
-============================== */ 
+============================== */
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -174,38 +174,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
             })
 
-            .then(function (response) {
+                .then(function (response) {
 
-                console.log("Status HTTP:", response.status);
+                    console.log("Status HTTP:", response.status);
 
-                return response.text();
+                    return response.text();
 
-            })
+                })
 
-            .then(function (resultado) {
+                .then(function (resultado) {
 
-                console.log("Resposta do PHP:", resultado);
+                    console.log("Resposta do PHP:", resultado);
 
 
-                if (resultado.trim() !== "ok") {
+                    if (resultado.trim() !== "ok") {
+
+                        console.error(
+                            "O PHP retornou:",
+                            resultado
+                        );
+
+                    }
+
+                })
+
+                .catch(function (erro) {
 
                     console.error(
-                        "O PHP retornou:",
-                        resultado
+                        "Erro ao alterar status:",
+                        erro
                     );
 
-                }
-
-            })
-
-            .catch(function (erro) {
-
-                console.error(
-                    "Erro ao alterar status:",
-                    erro
-                );
-
-            });
+                });
 
         });
 
@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 /* ==============================
     PESQUISA DE CLIENTE
-============================== */ 
+============================== */
 const telefone = document.getElementById("telefone");
 const listaClientes = document.getElementById("lista_clientes");
 
@@ -281,18 +281,18 @@ if (telefone && listaClientes) {
 // ============================== //
 // POPUs                          //
 // ============================== //
-    // =====================================================
-    // Popup de cadastro de produto
-    // =====================================================
-    function abrir_popup_cadstro_produto() {
-            document.getElementById("cadastro_prato").style.display = "flex";
-        }
-    function fechar_cadastro_prato() {
-        document.getElementById("cadastro_prato").style.display = "none";
+// =====================================================
+// Popup de cadastro de produto
+// =====================================================
+function abrir_popup_cadstro_produto() {
+    document.getElementById("cadastro_prato").style.display = "flex";
+}
+function fechar_cadastro_prato() {
+    document.getElementById("cadastro_prato").style.display = "none";
+}
+// Fechar clicando no fundo escuro
+document.getElementById("cadastro_prato").addEventListener("click", function (event) {
+    if (event.target === this) {
+        fechar_cadastro_prato();
     }
-    // Fechar clicando no fundo escuro
-    document.getElementById("cadastro_prato").addEventListener("click", function(event) {
-        if (event.target === this) {
-            fechar_cadastro_prato();
-        }
-    });
+});

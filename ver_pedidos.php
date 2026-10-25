@@ -292,7 +292,7 @@
                                     </td>
                                     <!-- CANCELAR -->
                                     <td class="th">
-                                        <form method="POST" action="cancelar_pedido.php" onsubmit=" return confirm( 'Tem certeza que deseja cancelar?' ); " >
+                                        <form method="POST" action="cancelar_pedido.php" onsubmit=" return confirm('Tem certeza que deseja cancelar?'); " >
                                             <input type="hidden" name="id_cancelar" value="<?php echo $linha['id_venda']; ?>" >
                                             <button class="btn_funcao" type="submit" >
                                                 ❎
@@ -301,12 +301,9 @@
                                     </td>
                                     <!-- EDITAR -->
                                     <td class="th">
-                                        <form method="POST" action="editar.php" onsubmit=" return confirm('Tem certeza que deseja editar?'); " >
-                                            <input type="hidden" name="id_editar" value="<?php echo $linha['id_venda']; ?>" >
-                                            <button class="btn_funcao" type="submit" >
-                                                📄
-                                            </button>
-                                        </form>
+                                        <button class="btn_funcao" type="button" onclick="popup_editar(<?= (int) $linha['id_venda'] ?>)">
+                                            📄
+                                        </button>
                                     </td>
                                     <!-- IMPRIMIR -->
                                     <td class="th">
@@ -326,72 +323,91 @@
         </div>
     </div>
     <script src="script.js"></script>
-<!-- =====================================================
-                        POPUPs
-===================================================== -->
-<!-- =====================================================
-    Popup Fechameto
-===================================================== -->
-<div id="fechamento" class="modal_fundo">
+    <!-- =====================================================
+                            POPUPs
+    ===================================================== -->
+    <!-- =====================================================
+        Popup Fechameto
+    ===================================================== -->
+    <div id="fechamento" class="modal_fundo">
+        <div class="modal">
+            <button type="button" class="btn_fechar" onclick="fecharPopuplogin()">
+                ×
+            </button>
+            <table id="tabela_fechamento" align="center">
+                <tr>
+                    <th>
+                        Dinheiro:
+                    </th>
+                    <th>
+                        Cartão:
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        R$ <?php echo number_format($pagamentos['dinheiro'], 2, ',', '.'); ?>
+                    </td>
+                    <td>
+                        R$ <?php echo number_format($pagamentos['cartão'], 2, ',', '.'); ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Pix:
+                    </th>
+                    <th>
+                        IFood:
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        R$ <?php echo number_format($pagamentos['pix'], 2, ',', '.'); ?>
+                    </td>
+                    <td>
+                        R$ <?php echo number_format($pagamentos['ifood'], 2, ',', '.'); ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Fiado:
+                    </th>
+                    <th>
+                        Total:
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        R$ <?php echo number_format($pagamentos['fiado'], 2, ',', '.'); ?>
+                    </td>
+                    <td>
+                        R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="2">
+                        <button type="button" class="btn_imprimir" onclick="imprimirFechamento()">
+                            Imprimir
+                        </button>
+                    </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- =====================================================
+        Popup Editar
+    ===================================================== -->
+<div id="editar_pedido" class="modal_fundo">
     <div class="modal">
-        <button type="button" class="btn_fechar" onclick="fecharPopuplogin()">
+        <button type="button" class="btn_fechar" onclick="fechar_popup_editar()">
             ×
         </button>
-        <table id="tabela_fechamento" align="center">
+        <table id="tabela_pedido" align="center">
             <tr>
-                <th>
-                    Dinheiro:
-                </th>
-                <th>
-                    Cartão:
-                </th>
+                <td>Nº pedido:</td>
+                <td id="numero_pedido"></td>
             </tr>
             <tr>
-                <td>
-                    R$ <?php echo number_format($pagamentos['dinheiro'], 2, ',', '.'); ?>
-                </td>
-                <td>
-                    R$ <?php echo number_format($pagamentos['cartão'], 2, ',', '.'); ?>
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Pix:
-                </th>
-                <th>
-                    IFood:
-                </th>
-            </tr>
-            <tr>
-                <td>
-                    R$ <?php echo number_format($pagamentos['pix'], 2, ',', '.'); ?>
-                </td>
-                <td>
-                    R$ <?php echo number_format($pagamentos['ifood'], 2, ',', '.'); ?>
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Fiado:
-                </th>
-                <th>
-                    Total:
-                </th>
-            </tr>
-            <tr>
-                <td>
-                    R$ <?php echo number_format($pagamentos['fiado'], 2, ',', '.'); ?>
-                </td>
-                <td>
-                    R$ <?php echo number_format($total_periodo, 2, ',', '.'); ?>
-                </td>
-            </tr>
-            <tr>
-                <th colspan="2">
-                    <button type="button" class="btn_imprimir" onclick="imprimirFechamento()">
-                        Imprimir
-                    </button>
-                </th>
+                
             </tr>
         </table>
     </div>
@@ -405,15 +421,28 @@
     function abrirPopup() {
             document.getElementById("fechamento").style.display = "flex";
         }
+
     function fecharPopuplogin() {
         document.getElementById("fechamento").style.display = "none";
     }
+
     // Fechar clicando no fundo escuro
     document.getElementById("fechamento").addEventListener("click", function(event) {
         if (event.target === this) {
             fecharPopup();
         }
     });
+    
+    // abrir o popup editar
+    function popup_editar(idVenda) {
+        document.getElementById("numero_pedido").textContent = idVenda;
+        document.getElementById("editar_pedido").style.display = "flex";
+    }
+    
+    // fecha o popup editar pedido
+    function fechar_popup_editar() {
+        document.getElementById("editar_pedido").style.display = "none";
+    }
 
     function imprimirFechamento() {
         window.print();
