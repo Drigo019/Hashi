@@ -572,18 +572,19 @@ function escapar($valor)
         .campo {
             margin: 8px 0;
             overflow-wrap: anywhere;
-            font-size: 13px;
+            font-size: 20px;
             line-height: 1.4;
         }
 
         .campo strong {
             display: inline-block;
             margin-bottom: 3px;
+            font-size: 20px;
         }
 
         .titulo-produtos {
             font-weight: bold;
-            font-size: 13px;
+            font-size: 20px;
         }
 
         table {
@@ -598,7 +599,7 @@ function escapar($valor)
             padding: 6px 3px;
             text-align: left;
             border-bottom: 1px solid #ccc;
-            font-size: 11px;
+            font-size: 20px;
             overflow-wrap: anywhere;
         }
 
@@ -621,6 +622,7 @@ function escapar($valor)
             width: 24.5%;
             text-align: right;
             white-space: nowrap;
+            font-size: 15px;
         }
 
         .total {
@@ -663,6 +665,7 @@ function escapar($valor)
                 width: 100%;
                 max-width: 100%;
                 margin: 0;
+                font-size: 13px
             }
 
             .botoes {
@@ -825,11 +828,7 @@ function escapar($valor)
         TOTAL: R$ <?= number_format($total, 2, ',', '.') ?>
     </div>
 
-    <div class="separador"></div>
 
-    <p class="agradecimento">
-        Obrigado pela preferência!
-    </p>
 
 </div>
 

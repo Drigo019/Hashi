@@ -175,7 +175,12 @@ $obs_pagamento = $pedido['obs_pagamento'] ?? '';
         h2 {
             text-align: center;
             font-size: 20px;
-            margin-bottom: 5px;
+            margin: 0 0 5px;
+        }
+
+        .pedido-numero {
+            text-align: center;
+            font-size: 13px;
         }
 
         .separador {
@@ -186,17 +191,26 @@ $obs_pagamento = $pedido['obs_pagamento'] ?? '';
         .campo {
             margin: 8px 0;
             overflow-wrap: anywhere;
+            font-size: 20px;
+            line-height: 1.4;
         }
 
         .campo strong {
             display: inline-block;
             margin-bottom: 3px;
+            font-size: 20px;
+        }
+
+        .titulo-produtos {
+            font-weight: bold;
+            font-size: 20px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            table-layout: fixed;
         }
 
         th,
@@ -204,17 +218,30 @@ $obs_pagamento = $pedido['obs_pagamento'] ?? '';
             padding: 6px 3px;
             text-align: left;
             border-bottom: 1px solid #ccc;
-            font-size: 12px;
+            font-size: 20px;
+            overflow-wrap: anywhere;
         }
 
         th {
             border-bottom: 1px solid #000;
         }
 
-        .numero,
-        .valor {
+        th:first-child,
+        td:first-child {
+            width: 39%;
+        }
+
+        .numero {
+            width: 12%;
             text-align: right;
             white-space: nowrap;
+        }
+
+        .valor {
+            width: 24.5%;
+            text-align: right;
+            white-space: nowrap;
+            font-size: 15px;
         }
 
         .total {
@@ -224,6 +251,12 @@ $obs_pagamento = $pedido['obs_pagamento'] ?? '';
             text-align: right;
             font-size: 19px;
             font-weight: bold;
+        }
+
+        .agradecimento {
+            text-align: center;
+            font-size: 12px;
+            margin: 15px 0 5px;
         }
 
         .botoes {
@@ -251,6 +284,7 @@ $obs_pagamento = $pedido['obs_pagamento'] ?? '';
                 width: 100%;
                 max-width: 100%;
                 margin: 0;
+                font-size: 13px
             }
 
             .botoes {
