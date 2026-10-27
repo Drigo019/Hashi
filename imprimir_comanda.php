@@ -1,4 +1,6 @@
+```php
 <?php
+
 session_start();
 
 require_once 'conexao.php';
@@ -9,7 +11,7 @@ require_once 'conexao.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // Verificar o token para evitar reenvio do formulário
+    // Verificar token para evitar pedidos duplicados
     $tokenRecebido = $_POST['token_pedido'] ?? '';
     $tokenSessao = $_SESSION['token_pedido'] ?? '';
 
@@ -18,12 +20,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tokenSessao === '' ||
         !hash_equals($tokenSessao, $tokenRecebido)
     ) {
-        exit('Este pedido já foi enviado ou o formulário expirou. ' .
-            'Volte à página de pedidos para iniciar outro.');
+        exit(
+            'Este pedido já foi enviado ou o formulário expirou. ' .
+            'Volte à página de pedidos para iniciar outro.'
+        );
     }
 
     // =================================================
-    // DADOS DO CLIENTE E DO PEDIDO
+    // RECEBER OS DADOS
     // =================================================
 
     $nome = trim($_POST['nome'] ?? '');
@@ -54,7 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tipo_entrega = $_POST['tipo_entrega'] ?? 'retirada';
 
     if ($nome === '' || $telefone === '' || $carrinho === '') {
-        exit('Preencha os dados do cliente e adicione produtos ao pedido.');
+        exit(
+            'Preencha os dados do cliente e adicione produtos ao pedido.'
+        );
     }
 
     if (!in_array($tipo_entrega, ['retirada', 'entregar'], true)) {
@@ -69,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // =================================================
-    // VALIDAR ITENS E CALCULAR TOTAL NO SERVIDOR
+    // VALIDAR PRODUTOS E CALCULAR O TOTAL
     // =================================================
 
     $total = 0.0;
@@ -89,6 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     foreach ($itens as $item) {
+
         $id_produto = filter_var(
             $item['id_produto'] ?? null,
             FILTER_VALIDATE_INT
@@ -129,7 +136,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $valorUnitario = (float) $produto['valor'];
-        $subtotal = round($valorUnitario * $quantidade, 2);
+
+        $subtotal = round(
+            $valorUnitario * $quantidade,
+            2
+        );
 
         $total += $subtotal;
 
@@ -144,17 +155,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     mysqli_stmt_close($stmtProduto);
 
-    // Acrescentar a taxa de entrega
+    // Taxa de entrega
+    $taxaEntrega = 0.0;
+
     if ($tipo_entrega === 'entregar') {
-        $total = round($total + 6.00, 2);
+        $taxaEntrega = 6.00;
+        $total = round($total + $taxaEntrega, 2);
     }
 
     // =================================================
-    // CADASTRAR OU LOCALIZAR O CLIENTE
+    // LOCALIZAR OU CADASTRAR CLIENTE
     // =================================================
 
     $sqlBusca = "
-        SELECT Id_cliente
+        SELECT id_cliente
         FROM clientes
         WHERE telefone = ?
         LIMIT 1
@@ -166,7 +180,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit('Erro ao preparar a busca do cliente.');
     }
 
-    mysqli_stmt_bind_param($stmtBusca, 's', $telefone);
+    mysqli_stmt_bind_param(
+        $stmtBusca,
+        's',
+        $telefone
+    );
+
     mysqli_stmt_execute($stmtBusca);
 
     $resultado = mysqli_stmt_get_result($stmtBusca);
@@ -176,7 +195,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($cliente) {
 
-        $id_cliente = (int) $cliente['Id_cliente'];
+        $id_cliente = (int) $cliente['id_cliente'];
+
+        // Atualizar o nome caso o cliente já exista
+        $sqlAtualizaCliente = "
+            UPDATE clientes
+            SET nome = ?
+            WHERE id_cliente = ?
+        ";
+
+        $stmtAtualiza = mysqli_prepare(
+            $conexao,
+            $sqlAtualizaCliente
+        );
+
+        if ($stmtAtualiza) {
+            mysqli_stmt_bind_param(
+                $stmtAtualiza,
+                'si',
+                $nome,
+                $id_cliente
+            );
+
+            mysqli_stmt_execute($stmtAtualiza);
+            mysqli_stmt_close($stmtAtualiza);
+        }
+
     } else {
 
         $sqlCliente = "
@@ -184,7 +228,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES (?, ?)
         ";
 
-        $stmtCliente = mysqli_prepare($conexao, $sqlCliente);
+        $stmtCliente = mysqli_prepare(
+            $conexao,
+            $sqlCliente
+        );
 
         if (!$stmtCliente) {
             exit('Erro ao preparar o cadastro do cliente.');
@@ -208,7 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // =================================================
-    // CADASTRAR OU LOCALIZAR O ENDEREÇO
+    // LOCALIZAR OU CADASTRAR ENDEREÇO
     // =================================================
 
     $id_endereco_cliente = null;
@@ -256,7 +303,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($endereco) {
 
             $id_endereco_cliente = (int)
-            $endereco['id_endereco_cliente'];
+                $endereco['id_endereco_cliente'];
+
         } else {
 
             $sqlNovoEndereco = "
@@ -295,8 +343,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // =================================================
-    // CADASTRAR A VENDA UMA ÚNICA VEZ
-    // =================================================
+    // CADASTRAR VENDA
+    // =====================================================
 
     $sqlVenda = "
         INSERT INTO vendas
@@ -333,13 +381,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit('Erro ao cadastrar a venda.');
     }
 
-    // Este ID é obtido depois do INSERT INTO vendas
     $id_venda = mysqli_insert_id($conexao);
 
     mysqli_stmt_close($stmtVenda);
 
     // =================================================
-    // SALVAR OS PRODUTOS NA TABELA itens_venda
+    // CADASTRAR ITENS DA VENDA
     // =================================================
 
     $sqlItem = "
@@ -361,6 +408,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     foreach ($itensValidados as $item) {
+
         $id_produto = $item['id_produto'];
         $quantidade = $item['quantidade'];
         $valorUnitario = $item['valor_unitario'];
@@ -378,7 +426,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!mysqli_stmt_execute($stmtItem)) {
             mysqli_stmt_close($stmtItem);
-
             exit(
                 'Erro ao salvar os produtos do pedido: ' .
                 mysqli_error($conexao)
@@ -389,13 +436,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     mysqli_stmt_close($stmtItem);
 
     // =================================================
-    // GUARDAR OS DADOS PARA EXIBIR A COMANDA
+    // GUARDAR DADOS DA COMANDA NA SESSÃO
     // =================================================
 
     $_SESSION['comandas'][$id_venda] = [
         'nome' => $nome,
         'telefone' => $telefone,
-        'carrinho' => $carrinho,
+        'itens' => $itensValidados,
         'rua' => $rua,
         'numero' => $numero,
         'bairro' => $bairro,
@@ -403,26 +450,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'forma_pagamento' => $forma_pagamento,
         'obs_pagamento' => $obs_pagamento,
         'tipo_entrega' => $tipo_entrega,
-        'total' => $total
+        'taxa_entrega' => $taxaEntrega,
+        'total' => $total,
+        'data' => date('Y-m-d H:i:s')
     ];
 
-    // Invalidar o token usado nesse pedido
+    // Invalidar token utilizado
     unset($_SESSION['token_pedido']);
 
-    // =================================================
-    // REDIRECIONAR PARA GET
-    // =================================================
-
+    // Redirecionar para exibir a comanda
     header(
         'Location: imprimir_comanda.php?id=' .
-            urlencode((string) $id_venda)
+        urlencode((string) $id_venda)
     );
 
     exit;
 }
 
 // =====================================================
-// EXIBIR A COMANDA EM UMA REQUISIÇÃO GET
+// EXIBIR COMANDA NO GET
 // =====================================================
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -438,15 +484,18 @@ $id_venda = filter_input(
 
 if (!$id_venda || empty($_SESSION['comandas'][$id_venda])) {
     http_response_code(404);
-    exit('Comanda não encontrada nesta sessão. ' .
-        'Não foi realizado um novo cadastro.');
+    exit(
+        'Comanda não encontrada nesta sessão. ' .
+        'Não foi realizado um novo cadastro.'
+    );
 }
 
 $comanda = $_SESSION['comandas'][$id_venda];
 
+// Dados da comanda
 $nome = $comanda['nome'];
 $telefone = $comanda['telefone'];
-$carrinho = $comanda['carrinho'];
+$itens = $comanda['itens'] ?? [];
 
 $rua = $comanda['rua'];
 $numero = $comanda['numero'];
@@ -457,20 +506,19 @@ $forma_pagamento = $comanda['forma_pagamento'];
 $obs_pagamento = $comanda['obs_pagamento'];
 
 $tipo_entrega = $comanda['tipo_entrega'];
-$total = $comanda['total'];
+$taxaEntrega = (float) ($comanda['taxa_entrega'] ?? 0);
+$total = (float) $comanda['total'];
+$data = $comanda['data'] ?? '';
 
-// Converter as quebras de linha do carrinho em texto seguro
-$carrinhoTexto = preg_replace(
-    '/<br\s*\/?>/i',
-    "\n",
-    $carrinho
-);
+function escapar($valor)
+{
+    return htmlspecialchars(
+        (string) ($valor ?? ''),
+        ENT_QUOTES,
+        'UTF-8'
+    );
+}
 
-$carrinhoTexto = htmlspecialchars(
-    strip_tags($carrinhoTexto),
-    ENT_QUOTES,
-    'UTF-8'
-);
 ?>
 
 <!DOCTYPE html>
@@ -481,73 +529,144 @@ $carrinhoTexto = htmlspecialchars(
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0">
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>
-        Comanda - Pedido <?= (int) $id_venda ?>
-    </title>
-
-    <link rel="stylesheet" href="style.css">
+    <title>Comanda - Pedido <?= (int) $id_venda ?></title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 15px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #000;
+            background: #fff;
+        }
+
         #comanda {
             width: 350px;
-            max-width: 95%;
-            margin: 20px auto;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 14px;
+            max-width: 100%;
+            margin: 0 auto;
         }
 
-        #comanda table {
+        h2 {
+            text-align: center;
+            font-size: 20px;
+            margin: 0 0 5px;
+        }
+
+        .pedido-numero {
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .separador {
+            border-top: 1px dashed #000;
+            margin: 10px 0;
+        }
+
+        .campo {
+            margin: 8px 0;
+            overflow-wrap: anywhere;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .campo strong {
+            display: inline-block;
+            margin-bottom: 3px;
+        }
+
+        .titulo-produtos {
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
+            table-layout: fixed;
         }
 
-        #comanda td {
-            padding: 5px;
-            vertical-align: top;
+        th,
+        td {
+            padding: 6px 3px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+            font-size: 11px;
+            overflow-wrap: anywhere;
+        }
+
+        th {
+            border-bottom: 1px solid #000;
+        }
+
+        th:first-child,
+        td:first-child {
+            width: 39%;
+        }
+
+        .numero {
+            width: 12%;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .valor {
+            width: 24.5%;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .total {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px dashed #000;
+            text-align: right;
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .agradecimento {
+            text-align: center;
+            font-size: 12px;
+            margin: 15px 0 5px;
         }
 
         .botoes {
             text-align: center;
-            margin: 20px;
+            margin: 20px auto;
         }
 
         .botoes button {
             padding: 10px 18px;
+            margin: 5px;
             cursor: pointer;
         }
 
-        .pedido-texto {
-            white-space: pre-line;
-            overflow-wrap: anywhere;
-        }
-
         @media print {
-            body * {
-                visibility: hidden;
+            @page {
+                size: auto;
+                margin: 5mm;
             }
 
-            #comanda,
-            #comanda * {
-                visibility: visible;
+            body {
+                padding: 0;
             }
 
             #comanda {
-                position: absolute;
-                top: 0;
-                left: 0;
                 width: 100%;
-                max-width: none;
+                max-width: 100%;
                 margin: 0;
             }
 
             .botoes {
                 display: none;
-            }
-
-            @page {
-                margin: 5mm;
             }
         }
     </style>
@@ -555,149 +674,185 @@ $carrinhoTexto = htmlspecialchars(
 
 <body>
 
-    <div id="comanda">
+<div id="comanda">
 
-        <h2 style="text-align: center;">
-            COMANDA DO PEDIDO
-        </h2>
+    <h2>COMANDA DO PEDIDO</h2>
+
+    <div class="pedido-numero">
+        Pedido Nº <?= (int) $id_venda ?>
+    </div>
+
+    <div class="separador"></div>
+
+    <!-- DADOS DO CLIENTE -->
+
+    <div class="campo">
+        <strong>Nome:</strong><br>
+        <?= escapar($nome) ?>
+    </div>
+
+    <div class="campo">
+        <strong>Telefone:</strong><br>
+        <?= escapar($telefone) ?>
+    </div>
+
+    <div class="campo">
+        <strong>Data:</strong><br>
+        <?= $data !== ''
+            ? escapar(date('d/m/Y H:i', strtotime($data)))
+            : 'Não informada' ?>
+    </div>
+
+    <div class="campo">
+        <strong>Tipo de recebimento:</strong><br>
+
+        <?= $tipo_entrega === 'entregar'
+            ? 'Entrega'
+            : 'Retirada' ?>
+    </div>
+
+    <!-- ENDEREÇO -->
+
+    <?php if ($tipo_entrega === 'entregar'): ?>
+
+        <div class="campo">
+            <strong>Endereço:</strong><br>
+
+            <?= escapar($rua) ?>,
+            <?= escapar($numero) ?><br>
+
+            Bairro: <?= escapar($bairro) ?>
+        </div>
+
+        <?php if ($obs_entrega !== ''): ?>
+            <div class="campo">
+                <strong>Observação da entrega:</strong><br>
+                <?= nl2br(escapar($obs_entrega)) ?>
+            </div>
+        <?php endif; ?>
+
+    <?php endif; ?>
+
+    <div class="separador"></div>
+
+    <!-- PRODUTOS -->
+
+    <div class="titulo-produtos">
+        PRODUTOS DO PEDIDO
+    </div>
+
+    <?php if (!empty($itens)): ?>
 
         <table>
 
-            <tr>
-                <td><strong>Pedido Nº:</strong></td>
-                <td><?= (int) $id_venda ?></td>
-            </tr>
-
-            <tr>
-                <td colspan="2">
-                    <strong>Nome:</strong><br>
-                    <?= htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') ?>
-                </td>
-            </tr>
-
-            <tr>
-                <td colspan="2">
-                    <strong>Telefone:</strong><br>
-                    <?= htmlspecialchars($telefone, ENT_QUOTES, 'UTF-8') ?>
-                </td>
-            </tr>
-
-            <tr>
-                <td><strong>Tipo:</strong></td>
-                <td>
-                    <?= $tipo_entrega === 'entregar'
-                        ? 'Entrega'
-                        : 'Retirada' ?>
-                </td>
-            </tr>
-
-            <tr>
-                <td colspan="2">
-                    <strong>Pedido:</strong>
-                    <div class="pedido-texto"><?= $carrinhoTexto ?></div>
-                </td>
-            </tr>
-
-            <?php if ($obs_pagamento !== ''): ?>
+            <thead>
                 <tr>
-                    <td colspan="2">
-                        <strong>Observação do pedido:</strong><br>
-                        <?= htmlspecialchars(
-                            $obs_pagamento,
-                            ENT_QUOTES,
-                            'UTF-8'
-                        ) ?>
-                    </td>
+                    <th>Produto</th>
+                    <th class="numero">Qtd.</th>
+                    <th class="valor">Unit.</th>
+                    <th class="valor">Subtotal</th>
                 </tr>
-            <?php endif; ?>
+            </thead>
 
-            <?php if ($tipo_entrega === 'entregar'): ?>
+            <tbody>
 
-                <tr>
-                    <td colspan="2">
-                        <strong>Endereço:</strong><br>
+                <?php foreach ($itens as $item): ?>
 
-                        <?= htmlspecialchars(
-                            $rua,
-                            ENT_QUOTES,
-                            'UTF-8'
-                        ) ?>,
-                        <?= htmlspecialchars(
-                            $numero,
-                            ENT_QUOTES,
-                            'UTF-8'
-                        ) ?><br>
-
-                        Bairro:
-                        <?= htmlspecialchars(
-                            $bairro,
-                            ENT_QUOTES,
-                            'UTF-8'
-                        ) ?>
-                    </td>
-                </tr>
-
-                <?php if ($obs_entrega !== ''): ?>
                     <tr>
-                        <td colspan="2">
-                            <strong>Observação da entrega:</strong><br>
+                        <td><?= escapar($item['nome']) ?></td>
 
-                            <?= htmlspecialchars(
-                                $obs_entrega,
-                                ENT_QUOTES,
-                                'UTF-8'
+                        <td class="numero">
+                            <?= (int) $item['quantidade'] ?>
+                        </td>
+
+                        <td class="valor">
+                            <?= number_format(
+                                (float) $item['valor_unitario'],
+                                2,
+                                ',',
+                                '.'
+                            ) ?>
+                        </td>
+
+                        <td class="valor">
+                            <?= number_format(
+                                (float) $item['subtotal'],
+                                2,
+                                ',',
+                                '.'
                             ) ?>
                         </td>
                     </tr>
-                <?php endif; ?>
 
-            <?php endif; ?>
+                <?php endforeach; ?>
 
-            <tr>
-                <td><strong>Taxa de entrega:</strong></td>
-                <td>
-                    <?= $tipo_entrega === 'entregar'
-                        ? 'R$ 6,00'
-                        : 'R$ 0,00' ?>
-                </td>
-            </tr>
-
-            <tr>
-                <td><strong>Total:</strong></td>
-                <td>
-                    <strong>
-                        R$ <?= number_format($total, 2, ',', '.') ?>
-                    </strong>
-                </td>
-            </tr>
-
-            <tr>
-                <td><strong>Pagamento:</strong></td>
-                <td>
-                    <?= htmlspecialchars(
-                        $forma_pagamento,
-                        ENT_QUOTES,
-                        'UTF-8'
-                    ) ?>
-                </td>
-            </tr>
+            </tbody>
 
         </table>
 
+    <?php else: ?>
+
+        <p>Nenhum produto encontrado neste pedido.</p>
+
+    <?php endif; ?>
+
+    <!-- PAGAMENTO -->
+
+    <div class="separador"></div>
+
+    <div class="campo">
+        <strong>Forma de pagamento:</strong><br>
+        <?= escapar($forma_pagamento) ?>
     </div>
 
-    <div class="botoes">
-        <button type="button" onclick="window.print()">
-            Imprimir comanda
-        </button>
+    <?php if ($obs_pagamento !== ''): ?>
+
+        <div class="campo">
+            <strong>Observação do pagamento:</strong><br>
+            <?= nl2br(escapar($obs_pagamento)) ?>
+        </div>
+
+    <?php endif; ?>
+
+    <!-- TAXA E TOTAL -->
+
+    <div class="campo">
+        <strong>Taxa de entrega:</strong>
+        R$ <?= number_format($taxaEntrega, 2, ',', '.') ?>
     </div>
 
-    <script>
-        window.addEventListener('load', function() {
-            window.print();
-        });
-    </script>
+    <div class="total">
+        TOTAL: R$ <?= number_format($total, 2, ',', '.') ?>
+    </div>
+
+    <div class="separador"></div>
+
+    <p class="agradecimento">
+        Obrigado pela preferência!
+    </p>
+
+</div>
+
+<div class="botoes">
+
+    <button type="button" onclick="window.print()">
+        Imprimir comanda
+    </button>
+
+    <button
+        type="button"
+        onclick="window.location.href='ver_pedidos.php'"
+    >
+        Voltar
+    </button>
+
+</div>
+
+<script>
+    window.addEventListener('load', function () {
+        window.print();
+    });
+</script>
 
 </body>
-
 </html>
