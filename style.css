@@ -582,7 +582,7 @@ div[style*="border: 1px solid"] {
 }
 
 .btn_imprimir {
-    width: 100%;
+    width: 80%;
     height: 30px;
     cursor: pointer;
     background-color: rgb(219, 0, 0);

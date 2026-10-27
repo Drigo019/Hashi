@@ -311,15 +311,6 @@ while ($linha_pagamento = mysqli_fetch_assoc($resultado_pagamentos)) {
                                             📄
                                         </button>
                                     </td>
-                                    <!-- IMPRIMIR -->
-                                    <td class="th">
-                                        <form method="POST" action="imprimir_comanda_novamente.php" onsubmit="return confirm('Tem certeza que deseja imprimir?');">
-                                            <input type="hidden" name="id_imprimir" value="<?php echo $linha['id_venda']; ?>">
-                                            <button class="btn_funcao" type="submit">
-                                                🖨️
-                                            </button>
-                                        </form>
-                                    </td>
                                 </tr>
                             <?php } ?>
                         </table>
@@ -413,6 +404,10 @@ while ($linha_pagamento = mysqli_fetch_assoc($resultado_pagamentos)) {
                     <th id="numero_pedido"></th>
                 </tr>
                 <tr>
+                    <th>Nome:</th>
+                    <th id="nome"></th>
+                </tr>
+                <tr>
                     <th colspan="2">Pratos:</th>
                 </tr>
                 <tr>
@@ -432,10 +427,23 @@ while ($linha_pagamento = mysqli_fetch_assoc($resultado_pagamentos)) {
                     <th id="tipo_entrega"></th>
                 </tr>
                 <tr>
-                    <td colspan="2">
+                    <td>
                         <button type="button" class="btn_imprimir">
                             Editar pedido
                         </button>
+                    </td>
+                    <td>
+                        <form method="POST" action="reimprimir_comanda.php" onsubmit="return confirm('Tem certeza que deseja imprimir?');">
+                            <input type="hidden" name="id_imprimir" value="<?php echo $linha['id_venda']; ?>">
+                            <button class="btn_funcao" type="submit" onclick='reimprimir_comanda.php(
+                                                <?= (int) $linha["id_venda"] ?>,
+                                                <?= json_encode($linha["nome"] ?? "") ?>
+                                                <?= json_encode($linha["telefone"] ?? "") ?>,
+                                                <?= json_encode($linha["tipo_entrega"] ?? "") ?>,
+                                                <?= json_encode((float) $linha["total"]) ?> )'>
+                                Imprimir novamente
+                            </button>
+                        </form>
                     </td>
                 </tr>
             </table>
@@ -464,8 +472,10 @@ while ($linha_pagamento = mysqli_fetch_assoc($resultado_pagamentos)) {
     });
 
     // abrir o popup editar
-    function popup_editar(id_venda, tipo_entrega, total) {
+    function popup_editar(id_venda, nome, telefone, tipo_entrega,  total) {
         document.getElementById("numero_pedido").textContent = id_venda;
+        document.getElementById("nome").textContent = nome;
+        document.getElementById("telefone").textContent = telefone;
         document.getElementById("tipo_entrega").textContent = tipo_entrega;
 
         const valorTotal = Number(total);
