@@ -189,7 +189,11 @@ while ($linha_pagamento = mysqli_fetch_assoc($resultado_pagamentos)) {
             <tr><th>Total:</th><th id="total"></th></tr>
             <tr><th>Tipo de entrega:</th><th id="tipo_entrega"></th></tr>
             <tr>
-                <td><button type="button" class="btn_imprimir" onclick="alert('A função de editar pedido ainda precisa ser implementada.');">Editar pedido</button></td>
+                <td>
+                    <button type="button" class="btn_funcao" onclick="alert('A função de editar pedido ainda precisa ser implementada.');">
+                        Editar pedido
+                    </button>
+                </td>
                 <td>
                     <form method="POST" action="reimprimir_comanda.php" onsubmit="return confirm('Tem certeza que deseja imprimir?');">
                         <input type="hidden" name="id_imprimir" id="id_imprimir" value="">
@@ -253,18 +257,24 @@ function carregarPratos(idVenda) {
             const thead = document.createElement("thead");
             thead.innerHTML = "<tr><th>Prato</th><th>Quantidade</th><th>Valor unitário</th><th>Subtotal</th></tr>";
             tabela.appendChild(thead);
+
             const tbody = document.createElement("tbody");
             itens.forEach(item => {
+
                 const linha = document.createElement("tr");
+
                 const nome = document.createElement("td");
                 nome.textContent = item.nome ?? "";
                 nome.classList.add("celula");
+
                 const quantidade = document.createElement("td");
                 quantidade.textContent = item.quantidade ?? 0;
                 quantidade.classList.add("celula");
+
                 const valor = document.createElement("td");
                 valor.textContent = "R$ " + Number(item.valor_unitario ?? 0).toLocaleString("pt-BR", {minimumFractionDigits:2, maximumFractionDigits:2});
                 valor.classList.add("celula");
+
                 const subtotal = document.createElement("td");
                 subtotal.textContent = "R$ " + Number(item.subtotal ?? 0).toLocaleString("pt-BR", {minimumFractionDigits:2, maximumFractionDigits:2});
                 subtotal.classList.add("celula");
