@@ -190,12 +190,12 @@ while ($linha_pagamento = mysqli_fetch_assoc($resultado_pagamentos)) {
             <tr><th>Tipo de entrega:</th><th id="tipo_entrega"></th></tr>
             <tr>
                 <td>
-                    <button type="button" class="btn_funcao" onclick="alert('A função de editar pedido ainda precisa ser implementada.');">
+                    <button type="button" class="btn_funcao">
                         Editar pedido
                     </button>
                 </td>
                 <td>
-                    <form method="POST" action="reimprimir_comanda.php" onsubmit="return confirm('Tem certeza que deseja imprimir?');">
+                    <form method="POST" action="reimprimir_comanda.php">
                         <input type="hidden" name="id_imprimir" id="id_imprimir" value="">
                         <button class="btn_funcao" type="submit">Imprimir novamente</button>
                     </form>
