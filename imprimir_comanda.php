@@ -532,7 +532,7 @@ function escapar($valor)
     >
 
     <title>Comanda - Pedido <?= (int) $id_venda ?></title>
-
+<link rel="icon" type="image/png" href="icons/logo.png">
     <style>
         * {
             box-sizing: border-box;
