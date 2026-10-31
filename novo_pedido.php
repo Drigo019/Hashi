@@ -262,6 +262,7 @@ while ($produto = $resultado->fetch_assoc()) {
                                     <option value="Mais parque">Mais Parque</option>
                                     <option value="Maziero">Maziero</option>
                                     <option value="Miguel Gomes">Miguel Gomes</option>
+                                    <option value="Miguel Nalfel">Miguel Nalfel</opition>
                                     <option value="Mocoquinha">Mocoquinha</option>
                                     <option value="Morro Azul">Morro Azul</option>
                                     <option value="Nelson Niero">Nelson Niero</option>
