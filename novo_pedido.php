@@ -131,8 +131,8 @@ while ($produto = $resultado->fetch_assoc()) {
                                                 <?php
                                                 echo number_format($produto['valor'], 2, ',', '.'); ?>
                                                 <br>
-                                                <button type="button" class="btn_adicionar" onclick='adicionarAoCarrinho( <?= (int) $produto["id_produto"] ?>, <?= json_encode($produto["nome"], JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP) ?>, <?= json_encode((float) $produto["valor"]) ?>)'>
-                                                    Adicionar
+                                                <button type="button" class="btn_adicionar" onclick='abrir_popup_produto(<?= (int) $produto["id_produto"] ?>, <?= json_encode($produto["nome"], JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP) ?>, <?= json_encode((float) $produto["valor"]) ?>)'>
+                                                    Adicionar 
                                                 </button>
                                             </div>
                                         <?php } ?>
@@ -353,6 +353,53 @@ while ($produto = $resultado->fetch_assoc()) {
     </div>
     </form>
     <script src="script.js"></script>
+    <!-- =====================================================
+        Popup Fechameto
+    ===================================================== -->
+    <div id="produto" class="modal_fundo">
+        <div class="modal">
+            <button type="button" class="btn_fechar" onclick="fechar_popup_produto()">
+                ×
+            </button>
+            <table border="1" align="center">
+                <tr>
+                    <td>
+                        Nome:
+                    </td>
+                    <td id="nome_produto"></td>
+                </tr>
+                <tr>
+                    <td>
+                        Valor:
+                    </td>
+                    <td id="valor_produto"></td>
+                </tr>
+                <tr>
+                    <td>
+                        Quantidade:
+                    </td>
+                    <td>
+                        <input type="number" id="quantidade" value="1" min="1">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Obs:
+                    </td>
+                    <td>
+                        <input type="text" id="obs_produto">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <button type="button" class="btn_adicionar" onclick='adicionarAoCarrinho( <?= (int) $produto["id_produto"] ?>, <?= json_encode($produto["nome"], JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP) ?>, <?= json_encode((float) $produto["valor"]) ?>)'>
+                            Adicionar
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
     <script>
         let carrinho = [];
 
@@ -539,6 +586,15 @@ while ($produto = $resultado->fetch_assoc()) {
         document.addEventListener("DOMContentLoaded", function() {
             atualizarEntrega();
         });
+
+        function abrir_popup_produto(id_produto, nome, valor) {
+            document.getElementById("produto").style.display = "flex";
+            document.getElementById("nome_produto").textContent = nome;
+            document.getElementById("valor_produto").textContent = valor.toFixed(2);
+        }
+        function fechar_popup_produto() {
+            document.getElementById("produto").style.display = "none";
+        }
     </script>
 </body>
 
