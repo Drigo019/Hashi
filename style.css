@@ -360,15 +360,15 @@ body {
 ========================== */
 /* CRIADO */
 #table_clientes .linha_pedido.status-criado td {
-    background-color: #ff6459 !important;
+    background-color: #ffffff !important;
     color: #000;
 }
 
 
 /* ACEITO */
 #table_clientes .linha_pedido.status-aceito td {
-    background-color: #ff3021 !important;
-    color: #ffffff;
+    background-color: #ff4e4e !important;
+    color: #000000;
 }
 
 
@@ -381,14 +381,14 @@ body {
 
 /* PRONTO */
 #table_clientes .linha_pedido.status-pronto td {
-    background-color: #bb0000 !important;
+    background-color: #9e0000 !important;
     color: #ffffff;
 }
 
 
 /* SAIU PARA ENTREGA */
 #table_clientes .linha_pedido.status-saiu_para_entrega td {
-    background-color: #570600 !important;
+    background-color: #230200 !important;
     color: #fffdfd;
 }
 
