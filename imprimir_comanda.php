@@ -1128,7 +1128,7 @@ function escapar($valor)
 
                         <tr>
 
-                            <td>
+                            <td colspan="4">
                                 <?= escapar($item['nome']) ?>
                                 <?php if (!empty($item['obs_produto'])): ?>
                                     <br><strong>Obs:</strong> <?= escapar($item['obs_produto']) ?>
