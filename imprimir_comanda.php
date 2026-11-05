@@ -1134,6 +1134,8 @@ function escapar($valor)
                                     <br><small><strong>Obs:</strong> <?= escapar($item['obs_produto']) ?></small>
                                 <?php endif; ?>
                             </td>
+                        </tr>
+                        <tr>
 
                             <td class="numero">
 

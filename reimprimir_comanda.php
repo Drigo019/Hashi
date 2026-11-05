@@ -567,17 +567,19 @@ $obs_pagamento = $pedido['obs_pagamento'] ?? '';
 
                         <tr>
 
-                            <td>
+                            <td colspan="4">
 
                                 <?= escapar($item['nome']) ?>
 
                                 <?php if (!empty($item['obs_produto'])): ?>
 
-                                    <br><small><strong>Obs:</strong> <?= nl2br(escapar($item['obs_produto'])) ?></small>
+                                    <br><strong>Obs:</strong> <?= nl2br(escapar($item['obs_produto'])) ?>
 
                                 <?php endif; ?>
 
                             </td>
+                        </tr>
+                        <tr>
 
                             <td class="numero">
 
